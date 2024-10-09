@@ -26,6 +26,7 @@ TITLE_RESP = 'Title'
 TITLE = 'Journal About Ocean'
 PEOPLE_EP = '/people'
 
+
 person_model = api.model('Person', {
     'name': fields.String(required=True, description='The person\'s name'),
     'affiliation': fields.String(required=True, description='The person\'s affiliation'),
@@ -85,6 +86,26 @@ class People(Resource):
         """
         return ppl.get_people()
 
+
+
+    @api.expect(person_model)
+    def put(self):
+        """
+        Update an existing person.
+        """
+        data = api.payload
+        try:
+            updated_person = ppl.update_person(
+                data['name'],
+                data['affiliation'],
+                data['email'])
+            return {'message': 'Person updated successfully',
+                    'person': updated_person}, 200
+        except ValueError as e:
+            return {'message': str(e)}, 400
+
+
+
     @api.expect(person_model)
     def post(self):
         """
@@ -101,3 +122,5 @@ class People(Resource):
                     }, 201
         except ValueError as e:
             return {'message': str(e)}, 400
+
+
