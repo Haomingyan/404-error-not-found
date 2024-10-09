@@ -4,7 +4,7 @@ The endpoint called `endpoints` will return all available endpoints.
 """
 # from http import HTTPStatus
 
-from flask import Flask  # , request
+from flask import Flask, request # , request
 from flask_restx import Resource, Api, fields # Namespace, fields
 from flask_cors import CORS
 
@@ -90,7 +90,7 @@ class People(Resource):
         """
         Create a new person.
         """
-        data = api.payload
+        data = request.json
         try:
             new_person = ppl.create_person(
                 data['name'],
