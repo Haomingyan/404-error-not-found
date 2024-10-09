@@ -5,8 +5,11 @@ The endpoint called `endpoints` will return all available endpoints.
 # from http import HTTPStatus
 
 from flask import Flask  # , request
-from flask_restx import Resource, Api  # Namespace, fields
+from flask_restx import Resource, Api, fields # Namespace, fields
 from flask_cors import CORS
+
+import data.people as ppl
+from data.people import people_dict
 
 # import werkzeug.exceptions as wz
 
@@ -21,7 +24,13 @@ HELLO_RESP = 'hello'
 TITLE_EP = '/title'
 TITLE_RESP = 'Title'
 TITLE = 'Journal About Ocean'
+PEOPLE_EP = '/people'
 
+person_model = api.model('Person', {
+    'name': fields.String(required=True, description='The person\'s name'),
+    'affiliation': fields.String(required=True, description='The person\'s affiliation'),
+    'email': fields.String(required=True, description='The person\'s email')
+})
 
 @api.route(HELLO_EP)
 class HelloWorld(Resource):
@@ -62,3 +71,33 @@ class JournalTitle(Resource):
         Retrieve the journal title
         """
         return {TITLE_RESP: TITLE}
+
+
+@api.route(PEOPLE_EP)
+class People(Resource):
+    """
+    This class handles creating, reading, updating
+    and deleting journal people.
+    """
+    def get(self):
+        """
+        Retrieve the journal people.
+        """
+        return ppl.get_people()
+
+    @api.expect(person_model)
+    def post(self):
+        """
+        Create a new person.
+        """
+        data = api.payload
+        try:
+            new_person = ppl.create_person(
+                data['name'],
+                data['affiliation'],
+                data['email'])  #
+            return {'message': 'Person created successfully',
+                    'person': new_person,
+                    }, 201
+        except ValueError as e:
+            return {'message': str(e)}, 400
