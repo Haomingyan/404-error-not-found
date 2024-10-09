@@ -26,3 +26,33 @@ def test_title():
     resp_json = resp.get_json()
     assert ep.TITLE_RESP in resp_json
     assert isinstance(resp_json[ep.TITLE_RESP], str)
+
+def test_create_person():
+    person_data = {
+        "name": "Test",
+        "affiliation": "Test",
+        "email": "testuser@example.com"
+    }
+
+    resp = TEST_CLIENT.post(
+        ep.PEOPLE_EP,
+        json=person_data
+    )
+
+    assert resp.status_code == 201
+    assert resp.get_json()['message'] == 'Person created successfully'
+
+def test_create_duplicate_person():
+    person_data = {
+        "name": "Test",
+        "affiliation": "Test",
+        "email": "testuser@example.com"
+    }
+
+    resp = TEST_CLIENT.post(
+        ep.PEOPLE_EP,
+        json=person_data
+    )
+
+    assert resp.status_code == BAD_REQUEST
+    assert 'duplicate' in resp.get_json()['message']
