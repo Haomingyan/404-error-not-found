@@ -38,11 +38,17 @@ def read():
     return people
 
 
-def delete_person(_id):
-    people = read()
-    if _id in people:
-        del people[_id]
-        return _id
+# def delete_person(_id):
+#     people = read()
+#     if _id in people:
+#         del people[_id]
+#         return _id
+#     else:
+#         return None
+def delete_person(email):
+    if email in people_dict:
+        del people_dict[email]
+        return email
     else:
         return None
 
