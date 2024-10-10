@@ -1,7 +1,7 @@
 import data.users as usrs
 
 
-def test_get_users():
+def test_read():
     users = usrs.get_users()
     assert isinstance(users, dict)
     assert len(users) > 0  # at least one user!

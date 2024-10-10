@@ -7,9 +7,10 @@ The endpoint called `endpoints` will return all available endpoints.
 from flask import Flask, request  # , request
 from flask_restx import Resource, Api, fields  # Namespace , fields
 from flask_cors import CORS
+from http import HTTPStatus
 
 import data.people as ppl
-from data.people import people_dict
+# from data.people import people_dict
 
 # import werkzeug.exceptions as wz
 
@@ -30,6 +31,10 @@ person_model = api.model('Person', {
     'name': fields.String(required=True, description='The person\'s name'),
     'affiliation': fields.String(required=True, description='The person\'s affiliation'),
     'email': fields.String(required=True, description='The person\'s email')
+})
+
+email_model = api.model('Email', {
+    'email': fields.String(required=True, description="The person's email")
 })
 
 
@@ -74,18 +79,23 @@ class JournalTitle(Resource):
         return {TITLE_RESP: TITLE}
 
 
-@api.route(f'{PEOPLE_EP}/<path:email>')
-# @api.route(PEOPLE_EP)
+@api.route(PEOPLE_EP)
 class People(Resource):
     """
     This class handles creating, reading, updating
     and deleting journal people.
     """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Person not found')
     def get(self):
         """
-        Retrieve the journal people.
+        read the journal people.
         """
-        return ppl.get_people()
+        try:
+            people = ppl.read()
+            return people, HTTPStatus.OK
+        except ValueError as e:
+            return {'message': str(e)}, HTTPStatus.NOT_FOUND
 
     @api.expect(person_model)
     def put(self):
@@ -119,13 +129,3 @@ class People(Resource):
                     }, 201
         except ValueError as e:
             return {'message': str(e)}, 400
-
-    def get(self, email=None):
-        '''
-        read an existing person
-        '''
-        try:
-            person = ppl.read_person(email)
-            return person, 200
-        except ValueError as e:
-            return {'message': str(e)}, 404
