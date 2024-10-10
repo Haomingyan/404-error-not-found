@@ -67,3 +67,13 @@ def update_person(name: str, affiliation: str, email: str):
     else:
         # If the person does not exist, raise an error
         raise ValueError(f'Person with email {email} does not exist')
+
+def read_person(email:str):
+    '''
+    retrive person's info by name
+    return an error message if the person does not exist
+    '''
+    for person in people_dict.values():
+        if person[EMAIL] == email:
+            return person
+    raise ValueError(f'Person with email {email} does not exist')

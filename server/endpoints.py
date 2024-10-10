@@ -4,8 +4,8 @@ The endpoint called `endpoints` will return all available endpoints.
 """
 # from http import HTTPStatus
 
-from flask import Flask, request # , request
-from flask_restx import Resource, Api, fields # Namespace, fields
+from flask import Flask, request  # , request
+from flask_restx import Resource, Api, fields  # Namespace , fields
 from flask_cors import CORS
 
 import data.people as ppl
@@ -26,12 +26,12 @@ TITLE_RESP = 'Title'
 TITLE = 'Journal About Ocean'
 PEOPLE_EP = '/people'
 
-
 person_model = api.model('Person', {
     'name': fields.String(required=True, description='The person\'s name'),
     'affiliation': fields.String(required=True, description='The person\'s affiliation'),
     'email': fields.String(required=True, description='The person\'s email')
 })
+
 
 @api.route(HELLO_EP)
 class HelloWorld(Resource):
@@ -74,7 +74,8 @@ class JournalTitle(Resource):
         return {TITLE_RESP: TITLE}
 
 
-@api.route(PEOPLE_EP)
+@api.route(f'{PEOPLE_EP}/<path:email>')
+# @api.route(PEOPLE_EP)
 class People(Resource):
     """
     This class handles creating, reading, updating
@@ -85,8 +86,6 @@ class People(Resource):
         Retrieve the journal people.
         """
         return ppl.get_people()
-
-
 
     @api.expect(person_model)
     def put(self):
@@ -103,8 +102,6 @@ class People(Resource):
                     'person': updated_person}, 200
         except ValueError as e:
             return {'message': str(e)}, 400
-
-
 
     @api.expect(person_model)
     def post(self):
@@ -123,4 +120,12 @@ class People(Resource):
         except ValueError as e:
             return {'message': str(e)}, 400
 
-
+    def get(self, email=None):
+        '''
+        read an existing person
+        '''
+        try:
+            person = ppl.read_person(email)
+            return person, 200
+        except ValueError as e:
+            return {'message': str(e)}, 404
