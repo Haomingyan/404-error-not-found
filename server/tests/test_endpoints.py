@@ -10,6 +10,7 @@ from http.client import (
 from unittest.mock import patch
 
 import pytest
+import json
 
 import server.endpoints as ep
 
@@ -78,3 +79,34 @@ def test_read_person():
     assert resp_json[0]['name'] == "test_name"
     assert resp_json[0]['affiliation'] == "test_affiliation"
     assert resp_json[0]['email'] == "testuser@nyu.edu"
+
+def test_delete_person():
+    person_data = {
+        "name": "Delete Test",
+        "affiliation": "Test",
+        "email": "deleteuser@example.com"
+    }
+
+    # Create the person to be deleted
+    TEST_CLIENT.post(
+        ep.PEOPLE_EP,
+        json=person_data
+    )
+
+    # Delete the person
+    resp = TEST_CLIENT.delete(
+        ep.PEOPLE_EP,
+        json={"email": "deleteuser@example.com"}
+    )
+
+    assert resp.status_code == OK
+    assert resp.get_json()['message'] == 'Person deleted successfully'
+
+    # Try to delete the person again to ensure it was deleted
+    resp = TEST_CLIENT.delete(
+        ep.PEOPLE_EP,
+        json={"email": "deleteuser@example.com"}
+    )
+
+    assert resp.status_code == NOT_FOUND
+    assert resp.get_json()['message'] == 'Person not found'

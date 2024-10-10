@@ -129,3 +129,21 @@ class People(Resource):
                     }, 201
         except ValueError as e:
             return {'message': str(e)}, 400
+
+    @api.expect(email_model)
+    @api.response(HTTPStatus.OK, 'Person deleted successfully')
+    @api.response(HTTPStatus.NOT_FOUND, 'Person not found')
+    def delete(self):
+        """
+        Delete a person.
+        """
+        data = api.payload
+        email = data.get('email')
+        if not email:
+            return {'message': 'Email is required'}, 400
+
+        deleted_person = ppl.delete_person(email)
+        if deleted_person:
+            return {'message': 'Person deleted successfully'}, HTTPStatus.OK
+        else:
+            return {'message': 'Person not found'}, HTTPStatus.NOT_FOUND
