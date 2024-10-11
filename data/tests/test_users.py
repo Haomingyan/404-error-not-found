@@ -1,6 +1,6 @@
 import data.users as usrs
 import data.people as ppl
-from people import get_person, TEST_EMAIL, NAME, ROLES, AFFILIATION, EMAIL
+from data.people import get_person, TEST_EMAIL, NAME, ROLES, AFFILIATION, EMAIL
 
 def test_read():
     users = usrs.get_users()
