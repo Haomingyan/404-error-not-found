@@ -29,7 +29,8 @@ PEOPLE_EP = '/people'
 
 person_model = api.model('Person', {
     'name': fields.String(required=True, description='The person\'s name'),
-    'affiliation': fields.String(required=True, description='The person\'s affiliation'),
+    'affiliation': fields.String(required=True,
+                                 description='The person\'s affiliation'),
     'email': fields.String(required=True, description='The person\'s email')
 })
 

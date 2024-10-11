@@ -110,3 +110,39 @@ def test_delete_person():
 
     assert resp.status_code == NOT_FOUND
     assert resp.get_json()['message'] == 'Person not found'
+
+
+def test_update_person():
+    # Step 1: 创建一个用户
+    person_data = {
+        "name": "Original Name",
+        "affiliation": "Original Affiliation",
+        "email": "updateuser@example.com"
+    }
+
+    # 创建用户
+    resp = TEST_CLIENT.post(
+        ep.PEOPLE_EP,
+        json=person_data
+    )
+    assert resp.status_code == 201
+
+    # Step 2: 更新用户信息
+    updated_data = {
+        "name": "Updated Name",
+        "affiliation": "Updated Affiliation",
+        "email": "updateuser@example.com"
+    }
+
+    resp = TEST_CLIENT.put(
+        ep.PEOPLE_EP,
+        json=updated_data
+    )
+
+    # 验证更新结果
+    assert resp.status_code == 200
+    resp_json = resp.get_json()
+    assert resp_json['message'] == 'Person updated successfully'
+    assert resp_json['person']['name'] == "Updated Name"
+    assert resp_json['person']['affiliation'] == "Updated Affiliation"
+
