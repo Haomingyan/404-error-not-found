@@ -30,8 +30,8 @@ people_dict = {
 
 def get_person(email):
     """
-    Retrieve the details of a person by their email.
-    Returns the person's data if found, else None.
+    Retrieve the details of a person by their email
+    Returns the person's data if found, else None
     """
     if email in people_dict:
         return people_dict[email]

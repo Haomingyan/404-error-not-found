@@ -1,5 +1,6 @@
 import data.users as usrs
 import data.people as ppl
+from people import get_person, TEST_EMAIL, NAME, ROLES, AFFILIATION, EMAIL
 
 def test_read():
     users = usrs.get_users()
@@ -26,3 +27,26 @@ def test_delete_person():
     non_existing_email = 'nonexistent@nyu.edu'
     deleted_person = ppl.delete_person(non_existing_email)
     assert deleted_person is None
+
+def test_get_person():
+    # Test with an existing email
+    existing_email = TEST_EMAIL
+    expected_person = {
+        NAME: 'Eugene Callahan',
+        ROLES: [],
+        AFFILIATION: 'NYU',
+        EMAIL: TEST_EMAIL,
+    }
+    result = get_person(existing_email)
+    if result == expected_person:
+        print("Test passed: Existing email returns correct data.")
+    else:
+        print("Test failed: Existing email does not return correct data.")
+
+    # Test with a non-existing email
+    non_existing_email = 'nonexistent@example.com'
+    result = get_person(non_existing_email)
+    if result is None:
+        print("Test passed: Non-existing email returns None.")
+    else:
+        print("Test failed: Non-existing email does not return None.")
