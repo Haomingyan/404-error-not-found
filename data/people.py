@@ -2,6 +2,7 @@
 This module interfaces to our user data.
 """
 
+
 MIN_USER_NAME_LEN = 2
 # fields
 NAME = 'name'
@@ -26,6 +27,17 @@ people_dict = {
         EMAIL: DEL_EMAIL,
     },
 }
+
+def get_person(email):
+    """
+    Retrieve the details of a person by their email.
+    Returns the person's data if found, else None.
+    """
+    if email in people_dict:
+        return people_dict[email]
+    else:
+        return None
+
 
 def read():
     """
