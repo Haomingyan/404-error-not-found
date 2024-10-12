@@ -8,6 +8,7 @@ from http.client import (
 )
 
 from unittest.mock import patch
+from data.people import NAME
 
 import pytest
 import json
@@ -58,27 +59,13 @@ def test_create_duplicate_person():
     assert resp.status_code == BAD_REQUEST
     assert 'duplicate' in resp.get_json()['message']
 
-# def test_read_person():
-#     person_data = {
-#         "name": "test_name",
-#         "affiliation":"test_affiliation",
-#         "email": "testuser@nyu.edu"
-#     }
-#
-#     TEST_CLIENT.post(
-#         ep.PEOPLE_EP,
-#         json = person_data
-#     )
-#
-#     resp = TEST_CLIENT.get(ep.PEOPLE_EP)
-#     resp_json = resp.get_json()
-#
-#     assert resp.status_code == OK
-#     assert isinstance(resp_json, list)
-#     assert len(resp_json) > 0
-#     assert resp_json[0]['name'] == "test_name"
-#     assert resp_json[0]['affiliation'] == "test_affiliation"
-#     assert resp_json[0]['email'] == "testuser@nyu.edu"
+def test_read_person():
+    resp = TEST_CLIENT.get(ep.PEOPLE_EP)
+    resp_json = resp.get_json()
+    for _id, person in resp_json.items():
+        assert isinstance(_id, str)
+        assert len(_id) > 0
+        assert NAME in person
 
 def test_delete_person():
     person_data = {
