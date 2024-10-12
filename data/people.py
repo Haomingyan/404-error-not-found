@@ -28,6 +28,7 @@ people_dict = {
     },
 }
 
+
 def get_person(email):
     """
     Retrieve the details of a person by their email
@@ -64,6 +65,7 @@ def delete_person(email):
     else:
         return None
 
+
 def create_person(name: str, affiliation: str, email: str):
     print("Current people_dict:", people_dict)
     if email in people_dict:
@@ -71,10 +73,13 @@ def create_person(name: str, affiliation: str, email: str):
     people_dict[email] = {NAME: name, AFFILIATION: affiliation,
                           EMAIL: email}
 
-def update_person(name: str, affiliation: str, email: str):
+
+def update_person(name: str, affiliation: str,
+                  email: str):
     """
     Update the details of an existing person.
-    If the person with the given email exists, update their name and affiliation.
+    If the person with the given email exists,
+    update their name and affiliation.
     """
     print("Current people_dict:", people_dict)
     if email in people_dict:
@@ -85,4 +90,3 @@ def update_person(name: str, affiliation: str, email: str):
     else:
         # If the person does not exist, raise an error
         raise ValueError(f'Person with email {email} does not exist')
-
