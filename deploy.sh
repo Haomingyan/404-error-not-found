@@ -1,7 +1,7 @@
 #!/bin/bash
 # This shell script deploys a new version to a server.
 
-PROJ_DIR=demo-repo4
+PROJ_DIR=404-error-not-found
 VENV=Fall2023
 PA_DOMAIN="Brianwu.pythonanywhere.com"
 PA_USER='Brianwu'
