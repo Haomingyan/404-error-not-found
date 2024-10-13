@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
 
 env:
-  PYTHONPATH: /Users/hy/404-error-not-found
+  PYTHONPATH: /home/runner/work/404-error-not-found/404-error-not-found
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -48,7 +48,7 @@ jobs:
       - name: Run Python tests.
         run: make all_tests
         
-      - name: Deploy to PythonAnywhere
-        run: ./deploy.sh
-        env:
-          DEMO_PA_PWD: ${{secrets.DEMO_PA_PWD}}
+      # - name: Deploy to PythonAnywhere
+      #   run: ./deploy.sh
+      #   env:
+      #     DEMO_PA_PWD: ${{secrets.DEMO_PA_PWD}}
