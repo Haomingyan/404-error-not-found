@@ -72,6 +72,7 @@ def create_person(name: str, affiliation: str, email: str):
         raise ValueError(f'Adding duplicate {email=}')
     people_dict[email] = {NAME: name, AFFILIATION: affiliation,
                           EMAIL: email}
+    return email
 
 
 def update_person(name: str, affiliation: str,
@@ -90,3 +91,4 @@ def update_person(name: str, affiliation: str,
     else:
         # If the person does not exist, raise an error
         raise ValueError(f'Person with email {email} does not exist')
+

@@ -50,3 +50,13 @@ def test_get_person():
         print("Test passed: Non-existing email returns None.")
     else:
         print("Test failed: Non-existing email does not return None.")
+
+
+ADD_EMAIL = 'joe@nyu.edu'
+
+def test_create_person():
+    people = ppl.read()
+    assert ADD_EMAIL not in people
+    ppl.create_person('Joe Smith', 'NYU', ADD_EMAIL)
+    people = ppl.read()
+    assert ADD_EMAIL in people
