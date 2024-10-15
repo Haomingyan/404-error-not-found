@@ -34,6 +34,23 @@ def read():
     return text
 
 
+def create_text(key, title, text):
+    """
+    Create a new text entry in text_dict.
+    - key: A unique identifier for the text
+    - title: The title of the page.
+    - text: The content of the page.
+    """
+    if key in text_dict:
+        raise ValueError(f'Text with key "{key}" already exists.')
+
+    text_dict[key] = {
+        TITLE: title,
+        TEXT: text
+    }
+    return text_dict[key]
+
+
 def main():
     print(read())
 
