@@ -34,7 +34,7 @@ def test_delete_text():
     assert key_to_delete not in txt.text_dict
 
 def test_delete_nonexistent_text():
-    # Try deleting a key that doesn't exist
+
     nonexistent_key = 'NonexistentPage'
     with pytest.raises(ValueError) as exc_info:
         txt.delete_text(nonexistent_key)
