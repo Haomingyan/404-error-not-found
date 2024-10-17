@@ -21,3 +21,22 @@ def test_create_duplicate_text():
         txt.create_text(duplicate_key, title, text_content)
 
     assert str(exc_info.value) == f'Text with key "{duplicate_key}" already exists.'
+
+
+def test_delete_text():
+    # First, ensure the key exists
+    key_to_delete = txt.DEL_KEY
+    assert key_to_delete in txt.text_dict
+
+    # Delete the text and check it is removed
+    delete_message = txt.delete_text(key_to_delete)
+    assert delete_message == f'Text with key "{key_to_delete}" has been deleted.'
+    assert key_to_delete not in txt.text_dict
+
+def test_delete_nonexistent_text():
+
+    nonexistent_key = 'NonexistentPage'
+    with pytest.raises(ValueError) as exc_info:
+        txt.delete_text(nonexistent_key)
+
+    assert str(exc_info.value) == f'Text with key "{nonexistent_key}" does not exist.'
