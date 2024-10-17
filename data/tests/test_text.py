@@ -40,3 +40,15 @@ def test_delete_nonexistent_text():
         txt.delete_text(nonexistent_key)
 
     assert str(exc_info.value) == f'Text with key "{nonexistent_key}" does not exist.'
+
+def test_update_text():
+    new_key = txt.TEST_KEY
+    new_title = 'Updated Page Title'
+    new_text = 'This is the updated content'
+
+    updated_text = txt.update_text(new_key)
+
+    assert updated_text[txt.TITLE] == new_title
+    assert updated_text[txt.TEXT] == new_text
+    assert txt.text_dict[new_key][txt.TITLE] == new_title
+    assert txt.text_dict[new_key][txt.TEXT] == new_text
