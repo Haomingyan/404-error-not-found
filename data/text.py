@@ -50,6 +50,16 @@ def create_text(key, title, text):
     }
     return text_dict[key]
 
+def update_text(key, title, text):
+    if key not in text_dict:
+        raise ValueError(f'Text with key "{key}" does not exist.')
+    else:
+        text_dict[key] = {
+            TITLE: title,
+            TEXT: text
+        }
+    return text_dict[key]
+
 
 def main():
     print(read())
