@@ -73,6 +73,7 @@ def delete_text(key):
     del text_dict[key]
     return f'Text with key "{key}" has been deleted.'
 
+
 def main():
     print(read())
 

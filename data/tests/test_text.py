@@ -46,7 +46,7 @@ def test_update_text():
     new_title = 'Updated Page Title'
     new_text = 'This is the updated content'
 
-    updated_text = txt.update_text(new_key)
+    updated_text = txt.update_text(new_key, new_title, new_text)
 
     assert updated_text[txt.TITLE] == new_title
     assert updated_text[txt.TEXT] == new_text
