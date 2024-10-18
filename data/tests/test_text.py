@@ -52,3 +52,13 @@ def test_update_text():
     assert updated_text[txt.TEXT] == new_text
     assert txt.text_dict[new_key][txt.TITLE] == new_title
     assert txt.text_dict[new_key][txt.TEXT] == new_text
+
+def test_update_nonexistent_text():
+    nonexistent_key = 'Non-existent Page'
+    new_title = 'New title'
+    new_text = 'New content for a page that does not exist'
+
+    with pytest.raises(ValueError) as exc_info:
+        txt.update_text(nonexistent_key,new_title,new_text)
+        
+    assert str(exc_info.value) == f'Text with key "{nonexistent_key}" does not exist.'
