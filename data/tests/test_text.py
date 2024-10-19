@@ -1,6 +1,25 @@
 import pytest
 import data.text as txt
 
+
+def test_read():
+    # Expected output based on initial `text_dict` state in the module
+    expected_output = {
+        txt.TEST_KEY: {
+            txt.TITLE: 'Home Page',
+            txt.TEXT: 'This is a journal about building API servers.',
+        },
+        txt.DEL_KEY: {
+            txt.TITLE: 'Home Page',
+            txt.TEXT: 'This is a journal about building API servers.',
+        },
+    }
+    # Call the `read` function
+    result = txt.read()
+
+    # Check if the result matches the expected output
+    assert result == expected_output
+
 def test_create_text():
     new_key = 'NewPage'
     title = 'New Page Title'
