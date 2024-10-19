@@ -148,3 +148,23 @@ class People(Resource):
             return {'message': 'Person deleted successfully'}, HTTPStatus.OK
         else:
             return {'message': 'Person not found'}, HTTPStatus.NOT_FOUND
+
+@api.route(TEXT_EP)
+class Texts(Resource):
+    """
+    This class handles reading all the text entries.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    def get(self):
+        """
+        Retrieve all text entries.
+        """
+        try:
+            texts = txt.read()
+            return texts, HTTPStatus.OK
+        except Exception as e:
+            return {'message': str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
