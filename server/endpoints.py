@@ -149,6 +149,7 @@ class People(Resource):
         else:
             return {'message': 'Person not found'}, HTTPStatus.NOT_FOUND
 
+
 @api.route(TEXT_EP)
 class Texts(Resource):
     """
