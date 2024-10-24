@@ -194,6 +194,7 @@ class Texts(Resource):
             return {'message': str(e)}, HTTPStatus.BAD_REQUEST
         except Exception as e:
             return {'message': str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
+
     @api.response(HTTPStatus.OK, 'Text deleted successfully')
     @api.response(HTTPStatus.NOT_FOUND, 'Text entry not found')
     def delete(self):
@@ -210,6 +211,7 @@ class Texts(Resource):
             return {'message': 'Text deleted successfully'}, HTTPStatus.OK
         except ValueError as e:
             return {'message': str(e)}, HTTPStatus.NOT_FOUND
+
 
 if __name__ == '__main__':
     app.run(debug=True)
