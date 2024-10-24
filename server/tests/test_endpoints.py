@@ -171,3 +171,33 @@ def test_create_duplicate_text():
     assert resp.status_code == 400
     assert 'already exists' in resp.get_json()['message']
 
+def test_delete_text():
+    text_data = {
+        "key": "delete_test",
+        "title": "Delete Test",
+        "text": "This text is for testing delete functionality."
+    }
+
+    # Create the text entry to be deleted
+    TEST_CLIENT.post(
+        ep.TEXT_EP,
+        json=text_data
+    )
+
+    # Delete the text entry
+    resp = TEST_CLIENT.delete(
+        ep.TEXT_EP,
+        json={"key": "delete_test"}
+    )
+
+    assert resp.status_code == OK
+    assert resp.get_json()['message'] == 'Text deleted successfully'
+
+    # Try to delete the text entry again to ensure it was deleted
+    resp = TEST_CLIENT.delete(
+        ep.TEXT_EP,
+        json={"key": "delete_test"}
+    )
+
+    assert resp.status_code == NOT_FOUND
+    assert resp.get_json()['message'] == 'Text entry not found'
