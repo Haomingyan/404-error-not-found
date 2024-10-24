@@ -209,8 +209,8 @@ class Texts(Resource):
         try:
             txt.delete_text(key)
             return {'message': 'Text deleted successfully'}, HTTPStatus.OK
-        except ValueError as e:
-            return {'message': str(e)}, HTTPStatus.NOT_FOUND
+        except ValueError:
+            return {'message': 'Text entry not found'}, HTTPStatus.NOT_FOUND
 
 
 if __name__ == '__main__':
