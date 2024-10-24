@@ -10,6 +10,7 @@ from flask_cors import CORS
 from http import HTTPStatus
 
 import data.people as ppl
+import data.text as txt
 # from data.people import people_dict
 
 # import werkzeug.exceptions as wz
@@ -26,6 +27,7 @@ TITLE_EP = '/title'
 TITLE_RESP = 'Title'
 TITLE = 'Journal About Ocean'
 PEOPLE_EP = '/people'
+TEXT_EP = '/texts'
 
 person_model = api.model('Person', {
     'name': fields.String(required=True, description='The person\'s name'),
