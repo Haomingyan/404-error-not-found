@@ -4,6 +4,8 @@ This module interfaces to our user data.
 
 import re
 
+import data.roles as rls
+
 MIN_USER_NAME_LEN = 2
 # fields
 NAME = 'name'
@@ -89,6 +91,19 @@ def create_person(name: str, affiliation: str, email: str):
     people_dict[email] = {NAME: name, AFFILIATION: affiliation,
                           EMAIL: email}
     return email
+
+
+def get_masthead() -> dict:
+    masthead = {}
+    mh_roles = rls.get_masthead_roles()
+    for mh_role, text in mh_roles.items():
+        people_w_role = {}
+        for person in read():
+            pass
+            # if has_role(person):
+            #     put their record in people_w_role
+        masthead[text] = people_w_role
+    return masthead
 
 
 def update_person(name: str, affiliation: str,
