@@ -27,7 +27,7 @@ TITLE_EP = '/title'
 TITLE_RESP = 'Title'
 TITLE = 'Journal About Ocean'
 PEOPLE_EP = '/people'
-TEXT_EP = '/texts'
+TEXT_EP = '/text'
 
 person_model = api.model('Person', {
     'name': fields.String(required=True, description='The person\'s name'),
@@ -165,6 +165,33 @@ class Texts(Resource):
         try:
             texts = txt.read()
             return texts, HTTPStatus.OK
+        except Exception as e:
+            return {'message': str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
+
+    @api.expect(api.model('Text', {
+        'key': fields.String(required=True,
+                             description='A unique identifier '
+                                         'for the text entry'),
+        'title': fields.String(required=True,
+                               description='The title of the text entry'),
+        'text': fields.String(required=True,
+                              description='The content of the text entry')
+    }))
+    @api.response(HTTPStatus.CREATED, 'Text created successfully')
+    @api.response(HTTPStatus.BAD_REQUEST, 'Text with this key already exists')
+    def post(self):
+        """
+        Create a new text entry.
+        """
+        data = api.payload
+        try:
+            new_text = txt.create_text(data['key'],
+                                       data['title'],
+                                       data['text'])
+            return {'message': 'Text created successfully',
+                    'text': new_text}, HTTPStatus.CREATED
+        except ValueError as e:
+            return {'message': str(e)}, HTTPStatus.BAD_REQUEST
         except Exception as e:
             return {'message': str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
 
