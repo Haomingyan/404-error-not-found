@@ -93,15 +93,21 @@ def create_person(name: str, affiliation: str, email: str):
     return email
 
 
-def get_masthead() -> dict:
+def has_arole(person: dict, role: str):
+    if role in person[ROLES]:
+        return True
+    else:
+        return False
+
+
+def get_masthead():
     masthead = {}
     mh_roles = rls.get_masthead_roles()
     for mh_role, text in mh_roles.items():
         people_w_role = {}
-        for person in read():
-            pass
-            # if has_role(person):
-            #     put their record in people_w_role
+        for person_email, person_data in read().items():
+            if has_arole(person_data, mh_role):
+                people_w_role[person_email] = person_data
         masthead[text] = people_w_role
     return masthead
 
