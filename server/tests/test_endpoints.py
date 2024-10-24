@@ -100,21 +100,21 @@ def test_delete_person():
 
 
 def test_update_person():
-    # Step 1: 创建一个用户
+
     person_data = {
         "name": "Original Name",
         "affiliation": "Original Affiliation",
         "email": "updateuser@example.com"
     }
 
-    # 创建用户
+
     resp = TEST_CLIENT.post(
         ep.PEOPLE_EP,
         json=person_data
     )
     assert resp.status_code == 201
 
-    # Step 2: 更新用户信息
+
     updated_data = {
         "name": "Updated Name",
         "affiliation": "Updated Affiliation",
@@ -126,7 +126,7 @@ def test_update_person():
         json=updated_data
     )
 
-    # 验证更新结果
+
     assert resp.status_code == 200
     resp_json = resp.get_json()
     assert resp_json['message'] == 'Person updated successfully'
@@ -201,3 +201,38 @@ def test_delete_text():
 
     assert resp.status_code == NOT_FOUND
     assert resp.get_json()['message'] == 'Text entry not found'
+
+
+def test_update_text():
+    # Initial text data
+    text_data = {
+        "key": "update_test",
+        "title": "Original Title",
+        "text": "This is the original text."
+    }
+
+    # Create the text entry to be updated
+    resp = TEST_CLIENT.post(
+        ep.TEXT_EP,
+        json=text_data
+    )
+    assert resp.status_code == 201
+
+    # Updated text data
+    updated_data = {
+        "key": "update_test",
+        "title": "Updated Title",
+        "text": "This text has been updated."
+    }
+
+    # Update the text entry
+    resp = TEST_CLIENT.put(
+        ep.TEXT_EP,
+        json=updated_data
+    )
+    assert resp.status_code == 200
+    resp_json = resp.get_json()
+    assert resp_json['message'] == 'Text updated successfully'
+    assert resp_json['text']['title'] == "Updated Title"
+    assert resp_json['text']['text'] == "This text has been updated."
+
