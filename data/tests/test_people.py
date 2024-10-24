@@ -57,3 +57,40 @@ def test_create_person():
     ppl.create_person('Joe Smith', 'NYU', ADD_EMAIL)
     people = ppl.read()
     assert ADD_EMAIL in people
+
+UPDATE_EMAIL = TEST_EMAIL
+NEW_NAME = 'Eugene Callahan Jr.'
+NEW_AFFILIATION = 'Columbia University'
+NEW_ROLES = ['Professor']
+
+def test_update_person():
+    # Test updating an existing person
+    person = get_person(UPDATE_EMAIL)
+    assert person is not None, "Test failed: Person does not exist."
+
+    # Update the person's information
+    try:
+        updated_person = ppl.update_person(name=NEW_NAME, affiliation=NEW_AFFILIATION, email=UPDATE_EMAIL)
+    except ValueError as e:
+        assert False, f"Test failed: {str(e)}"
+
+    # Verify that the person's information has been updated
+    assert updated_person[NAME] == NEW_NAME
+    assert updated_person[AFFILIATION] == NEW_AFFILIATION
+
+    # Fetch the updated person and check
+    updated_person_from_db = get_person(UPDATE_EMAIL)
+    assert updated_person_from_db[NAME] == NEW_NAME
+    assert updated_person_from_db[AFFILIATION] == NEW_AFFILIATION
+    print("Test passed: Existing person updated successfully.")
+
+    # Test updating a non-existing person
+    non_existing_email = 'nonexistent@example.com'
+    try:
+        ppl.update_person(name='Non Existent', affiliation='None', email=non_existing_email)
+    except ValueError as e:
+        assert str(e) == f'Person with email {non_existing_email} does not exist', "Test failed: Incorrect error message."
+    else:
+        assert False, "Test failed: Expected ValueError for non-existing person."
+    print("Test passed: Updating non-existing person returns ValueError.")
+

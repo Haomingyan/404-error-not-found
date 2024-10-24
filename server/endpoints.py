@@ -212,6 +212,35 @@ class Texts(Resource):
         except ValueError:
             return {'message': 'Text entry not found'}, HTTPStatus.NOT_FOUND
 
+    @api.expect(api.model('Text', {
+        'key': fields.String(required=True,
+                             description='A unique identifier '
+                                         'for the text entry'),
+        'title': fields.String(required=True,
+                               description='The title of the text entry'),
+        'text': fields.String(required=True,
+                              description='The content of the text entry')
+    }))
+    @api.response(HTTPStatus.OK, 'Text updated successfully')
+    @api.response(HTTPStatus.NOT_FOUND, 'Text with this key does not exist')
+    def put(self):
+        """
+        Update an existing text entry.
+        """
+        data = api.payload
+        try:
+            updated_text = txt.update_text(data['key'],
+                                           data['title'],
+                                           data['text'])
+            return {'message': 'Text updated successfully',
+                    'text': updated_text}, HTTPStatus.OK
+        except KeyError:
+            return ({'message': 'Text with this key does not exist'},
+                    HTTPStatus.NOT_FOUND)
+        except Exception as e:
+            return ({'message': str(e)},
+                    HTTPStatus.INTERNAL_SERVER_ERROR)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
