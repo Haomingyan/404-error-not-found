@@ -133,3 +133,41 @@ def test_update_person():
     assert resp_json['person']['name'] == "Updated Name"
     assert resp_json['person']['affiliation'] == "Updated Affiliation"
 
+
+def test_create_text():
+    text_data = {
+        "key": "001",
+        "title": "Ocean Exploration",
+        "text": "This text is about exploring the ocean depths."
+    }
+
+    resp = TEST_CLIENT.post(
+        ep.TEXT_EP,
+        json=text_data
+    )
+
+    assert resp.status_code == 201
+    assert resp.get_json()['message'] == 'Text created successfully'
+
+def test_create_duplicate_text():
+    text_data = {
+        "key": "001",
+        "title": "Ocean Exploration",
+        "text": "This text is about exploring the ocean depths."
+    }
+
+    # First creation should succeed
+    TEST_CLIENT.post(
+        ep.TEXT_EP,
+        json=text_data
+    )
+
+    # Attempt to create the same text entry again
+    resp = TEST_CLIENT.post(
+        ep.TEXT_EP,
+        json=text_data
+    )
+
+    assert resp.status_code == 400
+    assert 'already exists' in resp.get_json()['message']
+
