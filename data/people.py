@@ -31,11 +31,15 @@ people_dict = {
     },
 }
 
-CHAR_OR_DIGIT = '[A-Za-z0-9]'
+first_part = r"(?!\.)[a-zA-Z0-9!#$%&'*+/=?^_{|}~.-]+(?<!\.)"
+second_part = r"[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*"
+third_part = r"[a-zA-Z]{2,6}"
+
+EMAIL_REGEX = f"^{first_part}@{second_part}\\.{third_part}$"
 
 
 def is_valid_email(email: str) -> bool:
-    return re.match(f"{CHAR_OR_DIGIT}.*@{CHAR_OR_DIGIT}.*", email)
+    return bool(re.match(EMAIL_REGEX, email))
 
 
 def is_valid_person(name: str, affiliation: str, email: str,
@@ -85,11 +89,11 @@ def delete_person(email):
 
 
 def create_person(name: str, affiliation: str, email: str):
-    print("Current people_dict:", people_dict)
+    if not is_valid_email(email):
+        raise ValueError(f'Invalid email format: {email}')
     if email in people_dict:
         raise ValueError(f'Adding duplicate {email=}')
-    people_dict[email] = {NAME: name, AFFILIATION: affiliation,
-                          EMAIL: email}
+    people_dict[email] = {NAME: name, AFFILIATION: affiliation, EMAIL: email}
     return email
 
 
