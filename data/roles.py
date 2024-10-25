@@ -44,6 +44,9 @@ def is_valid(code: str) -> bool:
     return code in ROLES
 
 
+def get_role_descriptions() -> list:
+    return list(ROLES.values())
+
 def main():
     print(get_roles())
     print(get_role_codes())
