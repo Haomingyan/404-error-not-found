@@ -94,3 +94,36 @@ def test_update_person():
         assert False, "Test failed: Expected ValueError for non-existing person."
     print("Test passed: Updating non-existing person returns ValueError.")
 
+def test_get_masthead():
+    # Ensure no previous data remains
+    ppl.delete_person(MASTHEAD_EMAIL)
+    ppl.delete_person(NON_MASTHEAD_EMAIL)
+
+    # Create a person with a masthead role
+    masthead_roles = [rls.ED_CODE]  # Editor
+    create_person('Editor Person', 'NYU', MASTHEAD_EMAIL)
+    ppl.people_dict[MASTHEAD_EMAIL][ROLES] = masthead_roles
+
+    # Create a person without a masthead role
+    non_masthead_roles = [rls.AUTHOR_CODE]  # Author
+    create_person('Author Person', 'NYU', NON_MASTHEAD_EMAIL)
+    ppl.people_dict[NON_MASTHEAD_EMAIL][ROLES] = non_masthead_roles
+
+    # Call get_masthead to get the masthead people
+    masthead = get_masthead()
+
+    # Verify that the person with the masthead role is included
+    editor_title = rls.ROLES[rls.ED_CODE]  # Get the title "Editor"
+    assert editor_title in masthead
+    assert MASTHEAD_EMAIL in masthead[editor_title]
+    assert masthead[editor_title][MASTHEAD_EMAIL][NAME] == 'Editor Person'
+
+    # Verify that the person without a masthead role is not included
+    for role_title, people in masthead.items():
+        assert NON_MASTHEAD_EMAIL not in people
+
+    # Clean up test data
+    ppl.delete_person(MASTHEAD_EMAIL)
+    ppl.delete_person(NON_MASTHEAD_EMAIL)
+
+    print("Test passed: get_masthead returns correct masthead roles and excludes non-masthead roles.")
