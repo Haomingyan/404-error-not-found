@@ -59,6 +59,29 @@ def test_create_duplicate_person():
     assert resp.status_code == BAD_REQUEST
     assert 'duplicate' in resp.get_json()['message']
 
+
+def test_get_texts():
+    # Make a GET request to the /texts endpoint
+    resp = TEST_CLIENT.get(ep.TEXT_EP)
+
+    # Check the response status code
+    assert resp.status_code == OK
+
+    # Convert the response data to JSON
+    resp_json = resp.get_json()
+
+    # Verify that the response contains the text entries
+    assert isinstance(resp_json, dict)  # Ensure we get a dictionary of texts
+
+    # Check that at least one text entry exists in the response (if texts exist)
+    if resp_json:
+        for key, text_entry in resp_json.items():
+            assert 'title' in text_entry
+            assert 'text' in text_entry
+            assert isinstance(text_entry['title'], str)
+            assert isinstance(text_entry['text'], str)
+
+
 def test_read_person():
     resp = TEST_CLIENT.get(ep.PEOPLE_EP)
     resp_json = resp.get_json()
