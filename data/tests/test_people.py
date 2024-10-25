@@ -1,6 +1,6 @@
 # import data.users as usrs
 import data.people as ppl
-from data.people import get_person, get_masthead, TEST_EMAIL, NAME, ROLES, AFFILIATION, EMAIL
+from data.people import get_person, TEST_EMAIL, NAME, ROLES, AFFILIATION, EMAIL
 
 def test_read():
     people = ppl.read()
@@ -95,35 +95,46 @@ def test_update_person():
     print("Test passed: Updating non-existing person returns ValueError.")
 
 def test_get_masthead():
+    # Emails for testing
+    masthead_email = 'editor@nyu.edu'
+    non_masthead_email = 'author@nyu.edu'
+
     # Ensure no previous data remains
-    ppl.delete_person(MASTHEAD_EMAIL)
-    ppl.delete_person(NON_MASTHEAD_EMAIL)
+    ppl.delete_person(masthead_email)
+    ppl.delete_person(non_masthead_email)
 
-    # Create a person with a masthead role
-    masthead_roles = [rls.ED_CODE]  # Editor
-    create_person('Editor Person', 'NYU', MASTHEAD_EMAIL)
-    ppl.people_dict[MASTHEAD_EMAIL][ROLES] = masthead_roles
+    # Create a person with a masthead role (e.g., 'Editor')
+    masthead_person = {
+        ppl.NAME: 'Editor Person',
+        ppl.AFFILIATION: 'NYU',
+        ppl.ROLES: ['ED'],  # Assuming 'ED' is a valid masthead role
+        ppl.EMAIL: masthead_email
+    }
+    ppl.people_dict[masthead_email] = masthead_person
 
-    # Create a person without a masthead role
-    non_masthead_roles = [rls.AUTHOR_CODE]  # Author
-    create_person('Author Person', 'NYU', NON_MASTHEAD_EMAIL)
-    ppl.people_dict[NON_MASTHEAD_EMAIL][ROLES] = non_masthead_roles
+    # Create a person without a masthead role (e.g., 'Author')
+    non_masthead_person = {
+        ppl.NAME: 'Author Person',
+        ppl.AFFILIATION: 'NYU',
+        ppl.ROLES: ['AU'],  # Assuming 'AU' is a non-masthead role
+        ppl.EMAIL: non_masthead_email
+    }
+    ppl.people_dict[non_masthead_email] = non_masthead_person
 
-    # Call get_masthead to get the masthead people
-    masthead = get_masthead()
+    # Call get_masthead to retrieve the masthead people
+    masthead = ppl.get_masthead()
 
     # Verify that the person with the masthead role is included
-    editor_title = rls.ROLES[rls.ED_CODE]  # Get the title "Editor"
-    assert editor_title in masthead
-    assert MASTHEAD_EMAIL in masthead[editor_title]
-    assert masthead[editor_title][MASTHEAD_EMAIL][NAME] == 'Editor Person'
+    assert 'Editor' in masthead  # 'Editor' is assumed to be the title for 'ED'
+    assert masthead_email in masthead['Editor']
+    assert masthead['Editor'][masthead_email][ppl.NAME] == 'Editor Person'
 
     # Verify that the person without a masthead role is not included
     for role_title, people in masthead.items():
-        assert NON_MASTHEAD_EMAIL not in people
+        assert non_masthead_email not in people
 
     # Clean up test data
-    ppl.delete_person(MASTHEAD_EMAIL)
-    ppl.delete_person(NON_MASTHEAD_EMAIL)
+    ppl.delete_person(masthead_email)
+    ppl.delete_person(non_masthead_email)
 
     print("Test passed: get_masthead returns correct masthead roles and excludes non-masthead roles.")
