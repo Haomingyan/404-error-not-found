@@ -31,11 +31,14 @@ people_dict = {
     },
 }
 
-first_part = r"(?!\.)[a-zA-Z0-9!#$%&'*+/=?^_{|}~.-]+(?<!\.)"
+first_part = (
+    r"[a-zA-Z0-9]"
+    r"(?:[a-zA-Z0-9!#$%&'*+/=?^_{|}~.-]*[a-zA-Z0-9])"
+)
 second_part = r"[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*"
 third_part = r"[a-zA-Z]{2,6}"
 
-EMAIL_REGEX = f"^{first_part}@{second_part}\\.{third_part}$"
+EMAIL_REGEX = rf"^{first_part}@{second_part}\.{third_part}$"
 
 
 def is_valid_email(email: str) -> bool:
