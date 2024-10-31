@@ -1,10 +1,20 @@
-# import data.users as usrs
+import pytest
 import data.people as ppl
+from data.roles import TEST_CODE as TEST_ROLE_CODE
 from data.people import get_person, TEST_EMAIL, NAME, ROLES, AFFILIATION, EMAIL
 from data.people import get_masthead, create_person, delete_person, NAME, ROLES, EMAIL
 from data.roles import TEST_CODE
-import unittest
 from unittest.mock import patch
+
+TEMP_EMAIL = 'temp_person@temp.org'
+
+
+@pytest.fixture(scope='function')
+def temp_person():
+    _id = ppl.create_person('Joe Smith', 'NYU', TEMP_EMAIL, TEST_ROLE_CODE)
+    yield _id
+    ppl.delete_person(_id)
+
 
 def test_read():
     people = ppl.read()
@@ -14,6 +24,10 @@ def test_read():
     for _id, person in people.items():
         assert isinstance(_id, str)
         assert ppl.NAME in person
+
+def test_read_one(temp_person):
+    assert ppl.read_one(temp_person) is not None
+
 
 def test_delete_person():
     # Test deleting an existing person
