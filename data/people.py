@@ -46,11 +46,16 @@ def is_valid_email(email: str) -> bool:
 
 
 def is_valid_person(name: str, affiliation: str, email: str,
-                    role: str) -> bool:
-    if email in people_dict:
-        raise ValueError(f'Adding duplicate {email=}')
+                    role: str = None, roles: list = None) -> bool:
     if not is_valid_email(email):
         raise ValueError(f'Invalid email: {email}')
+    if role:
+        if not rls.is_valid(role):
+            raise ValueError(f'Invalid role: {role}')
+    elif roles:
+        for role in roles:
+            if not rls.is_valid(role):
+                raise ValueError(f'Invalid role: {role}')
     return True
 
 
@@ -99,13 +104,16 @@ def delete_person(email):
         return None
 
 
-def create_person(name: str, affiliation: str, email: str):
-    if not is_valid_email(email):
-        raise ValueError(f'Invalid email format: {email}')
+def create_person(name: str, affiliation: str, email: str, role: str):
     if email in people_dict:
         raise ValueError(f'Adding duplicate {email=}')
-    people_dict[email] = {NAME: name, AFFILIATION: affiliation, EMAIL: email}
-    return email
+    if is_valid_person(name, affiliation, email, role=role):
+        roles = []
+        if role:
+            roles.append(role)
+        people_dict[email] = {NAME: name, AFFILIATION: affiliation,
+                              EMAIL: email, ROLES: roles}
+        return email
 
 
 def has_arole(person: dict, role: str):

@@ -2,6 +2,7 @@
 import data.people as ppl
 from data.people import get_person, TEST_EMAIL, NAME, ROLES, AFFILIATION, EMAIL
 from data.people import get_masthead, create_person, delete_person, NAME, ROLES, EMAIL
+from data.roles import TEST_CODE
 
 def test_read():
     people = ppl.read()
@@ -53,10 +54,9 @@ def test_get_person():
 ADD_EMAIL = 'joe@nyu.edu'
 
 def test_create_person():
-    
     people = ppl.read()
     assert ADD_EMAIL not in people
-    ppl.create_person('Joe Smith', 'NYU', ADD_EMAIL)
+    ppl.create_person('Joe Smith', 'NYU', ADD_EMAIL, TEST_CODE)
     people = ppl.read()
     assert ADD_EMAIL in people
 
