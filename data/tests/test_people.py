@@ -67,6 +67,42 @@ NEW_NAME = 'Eugene Callahan Jr.'
 NEW_AFFILIATION = 'Columbia University'
 NEW_ROLES = ['Professor']
 
+def test_is_valid_person():
+    # Test with valid inputs
+    with patch('data.roles.is_valid', return_value=True):
+        try:
+            assert ppl.is_valid_person(name='John Doe', affiliation='NYU', email='johndoe@nyu.edu', role='editor')
+            print("Test passed: Valid person with role.")
+        except ValueError as e:
+            assert False, f"Test failed: {str(e)}"
+
+    # Test with valid inputs and multiple roles
+    with patch('data.roles.is_valid', return_value=True):
+        try:
+            assert ppl.is_valid_person(name='Jane Smith', affiliation='NYU', email='janesmith@nyu.edu', roles=['editor', 'reviewer'])
+            print("Test passed: Valid person with multiple roles.")
+        except ValueError as e:
+            assert False, f"Test failed: {str(e)}"
+
+    # Test with invalid email
+    try:
+        ppl.is_valid_person(name='Invalid Email', affiliation='NYU', email='invalid-email')
+    except ValueError as e:
+        assert str(e) == 'Invalid email: invalid-email', "Test failed: Incorrect error message for invalid email."
+    else:
+        assert False, "Test failed: Expected ValueError for invalid email."
+    print("Test passed: Invalid email raises ValueError.")
+
+    # Test with invalid role
+    with patch('data.roles.is_valid', return_value=False):
+        try:
+            ppl.is_valid_person(name='Invalid Role', affiliation='NYU', email='invalidrole@nyu.edu', role='invalid_role')
+        except ValueError as e:
+            assert str(e) == 'Invalid role: invalid_role', "Test failed: Incorrect error message for invalid role."
+        else:
+            assert False, "Test failed: Expected ValueError for invalid role."
+    print("Test passed: Invalid role raises ValueError.")
+
 def test_get_masthead():
     # Emails for test people
     masthead_email = 'editor@nyu.edu'
