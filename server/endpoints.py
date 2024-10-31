@@ -9,6 +9,7 @@ from flask_restx import Resource, Api, fields  # Namespace , fields
 from flask_cors import CORS
 from http import HTTPStatus
 
+import werkzeug.exceptions as wz
 import data.people as ppl
 import data.text as txt
 # from data.people import people_dict
@@ -28,12 +29,15 @@ TITLE_RESP = 'Title'
 TITLE = 'Journal About Ocean'
 PEOPLE_EP = '/people'
 TEXT_EP = '/text'
+MESSAGE = 'Message'
+RETURN = 'return'
 
 person_model = api.model('Person', {
     'name': fields.String(required=True, description='The person\'s name'),
     'affiliation': fields.String(required=True,
                                  description='The person\'s affiliation'),
-    'email': fields.String(required=True, description='The person\'s email')
+    'email': fields.String(required=True, description='The person\'s email'),
+    'role': fields.String(required=True, description='The person\'s role')
 })
 
 email_model = api.model('Email', {
@@ -117,21 +121,25 @@ class People(Resource):
             return {'message': str(e)}, 400
 
     @api.expect(person_model)
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
     def post(self):
         """
         Create a new person.
         """
-        data = request.json
         try:
-            new_person = ppl.create_person(
-                data['name'],
-                data['affiliation'],
-                data['email'])  #
-            return {'message': 'Person created successfully',
-                    'person': new_person,
-                    }, 201
-        except ValueError as e:
-            return {'message': str(e)}, 400
+            name = request.json.get(ppl.NAME)
+            affiliation = request.json.get(ppl.AFFILIATION)
+            email = request.json.get(ppl.EMAIL)
+            role = request.json.get(ppl.ROLES)
+            ret = ppl.create_person(name, affiliation, email, role)
+        except Exception as err:
+            raise wz.NotAcceptable(f'Could not add person: '
+                                   f'{err=}')
+        return {
+            MESSAGE: 'Person added!',
+            RETURN: ret,
+        }
 
     @api.expect(email_model)
     @api.response(HTTPStatus.OK, 'Person deleted successfully')

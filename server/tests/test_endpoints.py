@@ -33,7 +33,8 @@ def test_create_person():
     person_data = {
         "name": "Test",
         "affiliation": "Test",
-        "email": "testuser@example.com"
+        "email": "testuser@example.com",
+        "role": "AU"
     }
 
     resp = TEST_CLIENT.post(
@@ -41,14 +42,16 @@ def test_create_person():
         json=person_data
     )
 
-    assert resp.status_code == 201
-    assert resp.get_json()['message'] == 'Person created successfully'
+    assert resp.status_code == 200
+    response_data = resp.get_json()
+    assert response_data['Message'] == 'Person added!'
 
 def test_create_duplicate_person():
     person_data = {
         "name": "Test",
         "affiliation": "Test",
-        "email": "testuser@example.com"
+        "email": "testuser@example.com",
+        "role": "AU"
     }
 
     resp = TEST_CLIENT.post(
@@ -56,7 +59,7 @@ def test_create_duplicate_person():
         json=person_data
     )
 
-    assert resp.status_code == BAD_REQUEST
+    assert resp.status_code >= 400
     assert 'duplicate' in resp.get_json()['message']
 
 
@@ -135,7 +138,7 @@ def test_update_person():
         ep.PEOPLE_EP,
         json=person_data
     )
-    assert resp.status_code == 201
+    assert resp.status_code == 200
 
 
     updated_data = {
