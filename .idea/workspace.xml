@@ -68,6 +68,7 @@
   <component name="RunManager">
     <configuration name="pytest" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="404-error-not-found" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="/opt/anaconda3/bin/python3.12" />
