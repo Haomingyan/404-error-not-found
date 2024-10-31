@@ -8,6 +8,12 @@ from unittest.mock import patch
 
 TEMP_EMAIL = 'temp_person@temp.org'
 
+START_WITH_SYMBOL = '.kajshd@nyu.edu'
+
+
+def test_is_valid_email_start_with_symbol():
+    assert not ppl.is_valid_email(START_WITH_SYMBOL)
+
 
 @pytest.fixture(scope='function')
 def temp_person():
