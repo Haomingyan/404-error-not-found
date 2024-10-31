@@ -3,6 +3,8 @@ import data.people as ppl
 from data.people import get_person, TEST_EMAIL, NAME, ROLES, AFFILIATION, EMAIL
 from data.people import get_masthead, create_person, delete_person, NAME, ROLES, EMAIL
 from data.roles import TEST_CODE
+import unittest
+from unittest.mock import patch
 
 def test_read():
     people = ppl.read()
@@ -64,6 +66,55 @@ UPDATE_EMAIL = TEST_EMAIL
 NEW_NAME = 'Eugene Callahan Jr.'
 NEW_AFFILIATION = 'Columbia University'
 NEW_ROLES = ['Professor']
+
+def test_get_masthead():
+    # Emails for test people
+    masthead_email = 'editor@nyu.edu'
+    non_masthead_email = 'author@nyu.edu'
+
+    # Ensure no previous data remains
+    delete_person(masthead_email)
+    delete_person(non_masthead_email)
+
+    # Create a person (assumed to be part of the masthead)
+    masthead_person = {
+        NAME: 'Editor Person',
+        AFFILIATION: 'NYU',
+        EMAIL: masthead_email,
+        ROLES: ['editor']
+    }
+    ppl.people_dict[masthead_email] = masthead_person
+
+    # Create another person (assumed to not be part of the masthead)
+    non_masthead_person = {
+        NAME: 'Author Person',
+        AFFILIATION: 'NYU',
+        EMAIL: non_masthead_email,
+        ROLES: []
+    }
+    ppl.people_dict[non_masthead_email] = non_masthead_person
+
+    # Mock the roles used in get_masthead
+    with patch('data.roles.get_masthead_roles') as mock_get_masthead_roles:
+        mock_get_masthead_roles.return_value = {
+            'editor': 'Editor'
+        }
+
+        # Call get_masthead to retrieve the masthead people
+        masthead = get_masthead()
+
+        # Verify that the masthead person is included
+        assert masthead_email in masthead['Editor']
+        assert masthead['Editor'][masthead_email][NAME] == 'Editor Person'
+
+        # Verify that the non-masthead person is not included
+        assert non_masthead_email not in masthead['Editor']
+
+    # Clean up test data
+    delete_person(masthead_email)
+    delete_person(non_masthead_email)
+
+    print("Test passed: get_masthead returns correct masthead people and excludes non-masthead people.")
 
 def test_update_person():
     # Test updating an existing person
