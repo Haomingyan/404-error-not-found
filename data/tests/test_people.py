@@ -14,6 +14,8 @@ START_WITH_SYMBOL = '.kajshd@nyu.edu'
 def test_is_valid_email_start_with_symbol():
     assert not ppl.is_valid_email(START_WITH_SYMBOL)
 
+def test_is_valid_no_name():
+    assert not ppl.is_valid_email(NO_NAME)
 
 @pytest.fixture(scope='function')
 def temp_person():
