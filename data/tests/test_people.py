@@ -38,6 +38,9 @@ def test_read():
 def test_read_one(temp_person):
     assert ppl.read_one(temp_person) is not None
 
+def test_is_valid_email_no_at():
+    assert not ppl.is_valid_email(NO_AT)
+
 def test_delete_person():
     # Test deleting an existing person
     people = ppl.read()
