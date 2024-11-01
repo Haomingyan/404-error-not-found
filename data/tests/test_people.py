@@ -175,30 +175,45 @@ def test_get_masthead():
     print("Test passed: get_masthead returns correct masthead people and excludes non-masthead people.")
 
 def test_update_person():
+    # 定义新的角色
+    NEW_ROLE = 'editor'
+
     # Test updating an existing person
     person = get_person(UPDATE_EMAIL)
     assert person is not None, "Test failed: Person does not exist."
 
     # Update the person's information
     try:
-        updated_person = ppl.update_person(name=NEW_NAME, affiliation=NEW_AFFILIATION, email=UPDATE_EMAIL)
+        updated_person = ppl.update_person(
+            name=NEW_NAME,
+            affiliation=NEW_AFFILIATION,
+            email=UPDATE_EMAIL,
+            role=NEW_ROLE
+        )
     except ValueError as e:
         assert False, f"Test failed: {str(e)}"
 
     # Verify that the person's information has been updated
     assert updated_person[NAME] == NEW_NAME
     assert updated_person[AFFILIATION] == NEW_AFFILIATION
+    assert NEW_ROLE in updated_person[ROLES], "Test failed: Role not updated."
 
     # Fetch the updated person and check
     updated_person_from_db = get_person(UPDATE_EMAIL)
     assert updated_person_from_db[NAME] == NEW_NAME
     assert updated_person_from_db[AFFILIATION] == NEW_AFFILIATION
+    assert NEW_ROLE in updated_person_from_db[ROLES], "Test failed: Role not updated."
     print("Test passed: Existing person updated successfully.")
 
     # Test updating a non-existing person
     non_existing_email = 'nonexistent@example.com'
     try:
-        ppl.update_person(name='Non Existent', affiliation='None', email=non_existing_email)
+        ppl.update_person(
+            name='Non Existent',
+            affiliation='None',
+            email=non_existing_email,
+            role='some_role'
+        )
     except ValueError as e:
         assert str(e) == f'Person with email {non_existing_email} does not exist', "Test failed: Incorrect error message."
     else:

@@ -157,7 +157,7 @@ def test_update_person():
     assert resp_json['Message'] == 'Person updated successfully'
     assert resp_json['return']['name'] == "Updated Name"
     assert resp_json['return']['affiliation'] == "Updated Affiliation"
-    assert "editor" in resp_json['return']['roles']  # 检查角色是否更新
+    assert "editor" in resp_json['return']['roles']
 
 def test_create_text():
     text_data = {
