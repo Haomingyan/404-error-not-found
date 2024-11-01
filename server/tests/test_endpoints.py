@@ -130,9 +130,9 @@ def test_update_person():
     person_data = {
         "name": "Original Name",
         "affiliation": "Original Affiliation",
-        "email": "updateuser@example.com"
+        "email": "updateuser@example.com",
+        "role": "author"
     }
-
 
     resp = TEST_CLIENT.post(
         ep.PEOPLE_EP,
@@ -140,11 +140,11 @@ def test_update_person():
     )
     assert resp.status_code == 200
 
-
     updated_data = {
         "name": "Updated Name",
         "affiliation": "Updated Affiliation",
-        "email": "updateuser@example.com"
+        "email": "updateuser@example.com",
+        "role": "editor"
     }
 
     resp = TEST_CLIENT.put(
@@ -152,13 +152,12 @@ def test_update_person():
         json=updated_data
     )
 
-
     assert resp.status_code == 200
     resp_json = resp.get_json()
-    assert resp_json['message'] == 'Person updated successfully'
-    assert resp_json['person']['name'] == "Updated Name"
-    assert resp_json['person']['affiliation'] == "Updated Affiliation"
-
+    assert resp_json['Message'] == 'Person updated successfully'
+    assert resp_json['return']['name'] == "Updated Name"
+    assert resp_json['return']['affiliation'] == "Updated Affiliation"
+    assert "editor" in resp_json['return']['roles']  # 检查角色是否更新
 
 def test_create_text():
     text_data = {

@@ -105,20 +105,25 @@ class People(Resource):
             return {'message': str(e)}, HTTPStatus.NOT_FOUND
 
     @api.expect(person_model)
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable')
     def put(self):
         """
         Update an existing person.
         """
-        data = api.payload
+        data = request.json
+        name = data.get('name')
+        affiliation = data.get('affiliation')
+        email = data.get('email')
+        role = data.get('role')
         try:
-            updated_person = ppl.update_person(
-                data['name'],
-                data['affiliation'],
-                data['email'])
-            return {'message': 'Person updated successfully',
-                    'person': updated_person}, 200
-        except ValueError as e:
-            return {'message': str(e)}, 400
+            updated_person = ppl.update_person(name, affiliation, email, role)
+        except Exception as err:
+            raise wz.NotAcceptable(f'Could not update person: {err}')
+        return {
+            MESSAGE: 'Person updated successfully',
+            RETURN: updated_person,
+        }, HTTPStatus.OK
 
     @api.expect(person_model)
     @api.response(HTTPStatus.OK, 'Success')
