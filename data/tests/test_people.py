@@ -9,20 +9,22 @@ from unittest.mock import patch
 TEMP_EMAIL = 'temp_person@temp.org'
 
 START_WITH_SYMBOL = '.kajshd@nyu.edu'
-
+NO_NAME = "@nyu.edu"
+NO_AT = "tempdadada"
 
 def test_is_valid_email_start_with_symbol():
     assert not ppl.is_valid_email(START_WITH_SYMBOL)
 
-def test_is_valid_no_name():
-    assert not ppl.is_valid_email(NO_NAME)
+
+
+def test_is_valid_email_no_at():
+    assert not ppl.is_valid_email(NO_AT)
 
 @pytest.fixture(scope='function')
 def temp_person():
     _id = ppl.create_person('Joe Smith', 'NYU', TEMP_EMAIL, TEST_ROLE_CODE)
     yield _id
     ppl.delete_person(_id)
-
 
 def test_read():
     people = ppl.read()
@@ -35,7 +37,6 @@ def test_read():
 
 def test_read_one(temp_person):
     assert ppl.read_one(temp_person) is not None
-
 
 def test_delete_person():
     # Test deleting an existing person
@@ -73,7 +74,6 @@ def test_get_person():
         print("Test passed: Non-existing email returns None.")
     else:
         print("Test failed: Non-existing email does not return None.")
-
 
 ADD_EMAIL = 'joe@nyu.edu'
 
