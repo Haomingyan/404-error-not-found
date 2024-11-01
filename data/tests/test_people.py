@@ -15,10 +15,10 @@ NO_AT = "tempdadada"
 def test_is_valid_email_start_with_symbol():
     assert not ppl.is_valid_email(START_WITH_SYMBOL)
 
+def test_is_valid_no_name():
+    assert not ppl.is_valid_email(NO_NAME)
 
 
-def test_is_valid_email_no_at():
-    assert not ppl.is_valid_email(NO_AT)
 
 @pytest.fixture(scope='function')
 def temp_person():
