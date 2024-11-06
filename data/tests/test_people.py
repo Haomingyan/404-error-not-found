@@ -26,6 +26,16 @@ def temp_person():
     ppl.delete_person(_id)
 
 
+@pytest.fixture
+def valid_person_data():
+    return {
+        "name": "Test User",
+        "affiliation": "NYU",
+        "email": TEMP_EMAIL,
+        "role": TEST_ROLE_CODE
+    }
+
+
 def test_get_mh_fields():
     flds = ppl.get_mh_fields()
     assert isinstance(flds, list)
@@ -100,6 +110,13 @@ def test_create_person():
     ppl.create_person('Joe Smith', 'NYU', ADD_EMAIL, TEST_CODE)
     people = ppl.read()
     assert ADD_EMAIL in people
+
+
+# Second time creating temp_person (duplicate)
+def test_create_duplicate_person(temp_person):
+    with pytest.raises(ValueError, match="Adding duplicate email"):
+        ppl.create_person('Joe Smith', 'NYU', TEMP_EMAIL, 'AU')
+
 
 UPDATE_EMAIL = TEST_EMAIL
 NEW_NAME = 'Eugene Callahan Jr.'
@@ -237,45 +254,3 @@ def test_update_person():
         assert False, "Test failed: Expected ValueError for non-existing person."
     print("Test passed: Updating non-existing person returns ValueError.")
 
-
-
-# def test_get_masthead():
-#     # Emails for test people
-#     masthead_email = 'editor@nyu.edu'
-#     non_masthead_email = 'author@nyu.edu'
-#
-#     # Ensure no previous data remains
-#     delete_person(masthead_email)
-#     delete_person(non_masthead_email)
-#
-#     # Create a person (assumed to be part of the masthead)
-#     masthead_person = {
-#         NAME: 'Editor Person',
-#         ppl.AFFILIATION: 'NYU',
-#         EMAIL: masthead_email
-#     }
-#     ppl.people_dict[masthead_email] = masthead_person
-#
-#     # Create another person (assumed to not be part of the masthead)
-#     non_masthead_person = {
-#         NAME: 'Author Person',
-#         ppl.AFFILIATION: 'NYU',
-#         EMAIL: non_masthead_email
-#     }
-#     ppl.people_dict[non_masthead_email] = non_masthead_person
-#
-#     # Call get_masthead to retrieve the masthead people
-#     masthead = get_masthead()
-#
-#     # Verify that the masthead person is included
-#     assert masthead_email in masthead
-#     assert masthead[masthead_email][NAME] == 'Editor Person'
-#
-#     # Verify that the non-masthead person is not included
-#     assert non_masthead_email not in masthead
-#
-#     # Clean up test data
-#     delete_person(masthead_email)
-#     delete_person(non_masthead_email)
-#
-#     print("Test passed: get_masthead returns correct masthead people and excludes non-masthead people.")
