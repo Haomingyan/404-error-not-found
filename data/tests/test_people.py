@@ -19,12 +19,26 @@ def test_is_valid_no_name():
     assert not ppl.is_valid_email(NO_NAME)
 
 
-
 @pytest.fixture(scope='function')
 def temp_person():
     _id = ppl.create_person('Joe Smith', 'NYU', TEMP_EMAIL, TEST_ROLE_CODE)
     yield _id
     ppl.delete_person(_id)
+
+
+def test_get_mh_fields():
+    flds = ppl.get_mh_fields()
+    assert isinstance(flds, list)
+    assert len(flds) > 0
+
+
+def test_create_mh_rec(temp_person):
+    person_rec = ppl.read_one(temp_person)
+    mh_rec = ppl.create_mh_rec(person_rec)
+    assert isinstance(mh_rec, dict)
+    for field in ppl.MH_FIELDS:
+        assert field in mh_rec
+
 
 def test_read():
     people = ppl.read()
