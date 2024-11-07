@@ -35,6 +35,10 @@ def valid_person_data():
         "role": TEST_ROLE_CODE
     }
 
+def test_has_role(temp_person):
+    person_rec = ppl.read_one(temp_person)
+    assert ppl.has_arole(person_rec, TEST_ROLE_CODE)
+
 
 def test_get_mh_fields():
     flds = ppl.get_mh_fields()
@@ -61,6 +65,9 @@ def test_read():
 
 def test_read_one(temp_person):
     assert ppl.read_one(temp_person) is not None
+
+def test_read_one_nonexistent():
+    assert ppl.read_one('nonexistent@nyu.edu') is None
 
 def test_is_valid_email_no_at():
     assert not ppl.is_valid_email(NO_AT)
