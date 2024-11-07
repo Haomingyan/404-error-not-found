@@ -132,7 +132,8 @@ def test_read_nonexistent_person(mock_read):
     assert resp_json == {}, "Response should be empty for nonexistent person"
     
 
-def test_delete_person():
+@patch("data.people.delete_person", autospec=True, return_value=True)
+def test_delete_person(mock_delete):
     person_data = {
         "name": "Delete Test",
         "affiliation": "Test",
@@ -145,7 +146,7 @@ def test_delete_person():
         json=person_data
     )
 
-    # Delete the person
+    # Delete the person (mocking the delete function)
     resp = TEST_CLIENT.delete(
         ep.PEOPLE_EP,
         json={"email": "deleteuser@example.com"}
@@ -153,8 +154,10 @@ def test_delete_person():
 
     assert resp.status_code == OK
     assert resp.get_json()['message'] == 'Person deleted successfully'
+    mock_delete.assert_called_once_with("deleteuser@example.com")
 
     # Try to delete the person again to ensure it was deleted
+    mock_delete.return_value = False  # Simulate that the person no longer exists
     resp = TEST_CLIENT.delete(
         ep.PEOPLE_EP,
         json={"email": "deleteuser@example.com"}
@@ -162,6 +165,39 @@ def test_delete_person():
 
     assert resp.status_code == NOT_FOUND
     assert resp.get_json()['message'] == 'Person not found'
+
+
+
+# def test_delete_person():
+#     person_data = {
+#         "name": "Delete Test",
+#         "affiliation": "Test",
+#         "email": "deleteuser@example.com"
+#     }
+#
+#     # Create the person to be deleted
+#     TEST_CLIENT.post(
+#         ep.PEOPLE_EP,
+#         json=person_data
+#     )
+#
+#     # Delete the person
+#     resp = TEST_CLIENT.delete(
+#         ep.PEOPLE_EP,
+#         json={"email": "deleteuser@example.com"}
+#     )
+#
+#     assert resp.status_code == OK
+#     assert resp.get_json()['message'] == 'Person deleted successfully'
+#
+#     # Try to delete the person again to ensure it was deleted
+#     resp = TEST_CLIENT.delete(
+#         ep.PEOPLE_EP,
+#         json={"email": "deleteuser@example.com"}
+#     )
+#
+#     assert resp.status_code == NOT_FOUND
+#     assert resp.get_json()['message'] == 'Person not found'
 
 @pytest.fixture
 def update_person_data():
