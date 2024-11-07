@@ -110,13 +110,27 @@ def test_get_texts():
             assert isinstance(text_entry['text'], str)
 
 
-def test_read_person():
+@patch('data.people.read', autospec=True,
+       return_value={'id': {NAME: 'Joe Schmoe'}})
+def test_read(mock_read):
     resp = TEST_CLIENT.get(ep.PEOPLE_EP)
+    assert resp.status_code == OK
     resp_json = resp.get_json()
     for _id, person in resp_json.items():
         assert isinstance(_id, str)
         assert len(_id) > 0
         assert NAME in person
+
+@patch('data.people.read', autospec=True, return_value={})
+def test_read_nonexistent_person(mock_read):
+    resp = TEST_CLIENT.get(ep.PEOPLE_EP)
+    assert resp.status_code == OK
+    resp_json = resp.get_json()
+    
+    non_existent_id = "nonexistent_id"
+    assert non_existent_id not in resp_json, f"Unexpected ID: {non_existent_id}"
+    assert resp_json == {}, "Response should be empty for nonexistent person"
+    
 
 def test_delete_person():
     person_data = {
