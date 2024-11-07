@@ -37,7 +37,11 @@ def test_create_person(person_data):
     response_data = resp.get_json()
     assert response_data['Message'] == 'Person added!'
 
-
+@patch("server.endpoints.HELLO_RESP", "Hello, patched response!")
+def test_hello_with_patch():
+    resp = TEST_CLIENT.get(ep.HELLO_EP)
+    resp_json = resp.get_json()
+    assert "Hello, patched response!" in resp_json
 
 def test_hello():
     resp = TEST_CLIENT.get(ep.HELLO_EP)
