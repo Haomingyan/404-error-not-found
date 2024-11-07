@@ -39,6 +39,10 @@ def test_has_role(temp_person):
     person_rec = ppl.read_one(temp_person)
     assert ppl.has_arole(person_rec, TEST_ROLE_CODE)
 
+def test_has_no_role(temp_person):
+    person_rec = ppl.read_one(temp_person)
+    assert not ppl.has_arole(person_rec, 'Does not have a role')
+
 
 def test_get_mh_fields():
     flds = ppl.get_mh_fields()
