@@ -17,6 +17,27 @@ import server.endpoints as ep
 
 TEST_CLIENT = ep.app.test_client()
 
+# Fixture for person data
+@pytest.fixture
+def person_data():
+    return {
+        "name": "Test",
+        "affiliation": "Test",
+        "email": "testuser@example.com",
+        "role": "AU"
+    }
+
+# Modified test_create_person to use fixture
+def test_create_person(person_data):
+    resp = TEST_CLIENT.post(
+        ep.PEOPLE_EP,
+        json=person_data
+    )
+    assert resp.status_code == OK
+    response_data = resp.get_json()
+    assert response_data['Message'] == 'Person added!'
+
+
 
 def test_hello():
     resp = TEST_CLIENT.get(ep.HELLO_EP)
@@ -29,22 +50,22 @@ def test_title():
     assert ep.TITLE_RESP in resp_json
     assert isinstance(resp_json[ep.TITLE_RESP], str)
 
-def test_create_person():
-    person_data = {
-        "name": "Test",
-        "affiliation": "Test",
-        "email": "testuser@example.com",
-        "role": "AU"
-    }
-
-    resp = TEST_CLIENT.post(
-        ep.PEOPLE_EP,
-        json=person_data
-    )
-
-    assert resp.status_code == 200
-    response_data = resp.get_json()
-    assert response_data['Message'] == 'Person added!'
+# def test_create_person():
+#     person_data = {
+#         "name": "Test",
+#         "affiliation": "Test",
+#         "email": "testuser@example.com",
+#         "role": "AU"
+#     }
+#
+#     resp = TEST_CLIENT.post(
+#         ep.PEOPLE_EP,
+#         json=person_data
+#     )
+#
+#     assert resp.status_code == 200
+#     response_data = resp.get_json()
+#     assert response_data['Message'] == 'Person added!'
 
 def test_create_duplicate_person():
     person_data = {
