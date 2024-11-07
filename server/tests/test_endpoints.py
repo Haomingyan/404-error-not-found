@@ -149,6 +149,34 @@ def test_delete_person():
     assert resp.status_code == NOT_FOUND
     assert resp.get_json()['message'] == 'Person not found'
 
+@pytest.fixture
+def update_person_data():
+    return {
+        "name": "Original Name",
+        "affiliation": "Original Affiliation",
+        "email": "updateuser@example.com",
+        "role": "author"
+    }
+
+@pytest.fixture
+def non_existent_person_data():
+    return {
+        "name": "Nonexistent Person",
+        "affiliation": "Unknown",
+        "email": "nonexistent@example.com",
+        "role": "author"
+    }
+
+def test_update_nonexistent_person(non_existent_person_data):
+    resp = TEST_CLIENT.put(
+        ep.PEOPLE_EP,
+        json=non_existent_person_data
+    )
+
+    assert resp.status_code == 406
+    resp_json = resp.get_json()
+    expected_message = f"Could not update person: Person with email {non_existent_person_data['email']} does not exist"
+    assert resp_json['message'] == expected_message
 
 def test_update_person():
 
