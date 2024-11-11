@@ -5,14 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="60f8a6c1-fcb4-402a-ad9d-5b7209efb385" name="Changes" comment="Minor Error Update">
+      <change afterPath="$PROJECT_DIR$/data/tests/test_db_connect.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/roles.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/roles.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/text.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/text.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
     <envs>
@@ -119,7 +125,7 @@
       <workItem from="1728877574481" duration="36000" />
       <workItem from="1729113898102" duration="1737000" />
       <workItem from="1730414221366" duration="1209000" />
-      <workItem from="1731366274466" duration="1057000" />
+      <workItem from="1731366274466" duration="2089000" />
     </task>
     <task id="LOCAL-00001" summary="Add update_person endpoint test">
       <option name="closed" value="true" />
