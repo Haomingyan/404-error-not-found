@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="60f8a6c1-fcb4-402a-ad9d-5b7209efb385" name="Changes" comment="Minor Error Update">
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +35,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/IamtherealBrian/404-error-not-found.git&quot;,
-    &quot;accountId&quot;: &quot;9c25c976-10a1-49f9-8a49-ead88f2d863a&quot;
+    &quot;accountId&quot;: &quot;33df8503-3226-42fb-82c8-19464413746e&quot;
   }
 }</component>
   <component name="MarkdownSettingsMigration">
@@ -95,8 +95,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23339.11" />
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23339.11" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PY-242.23339.19" />
+        <option value="bundled-python-sdk-0029f7779945-399fe30bd8c1-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.23339.19" />
       </set>
     </attachedChunks>
   </component>
@@ -116,6 +116,8 @@
       <workItem from="1727801901716" duration="1491000" />
       <workItem from="1728877574481" duration="36000" />
       <workItem from="1729113898102" duration="1737000" />
+      <workItem from="1730414221366" duration="1209000" />
+      <workItem from="1731366274466" duration="335000" />
     </task>
     <task id="LOCAL-00001" summary="Add update_person endpoint test">
       <option name="closed" value="true" />

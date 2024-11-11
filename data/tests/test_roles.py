@@ -1,6 +1,5 @@
-
 import data.roles as rls
-
+from unittest.mock import patch
 
 def test_get_roles():
     roles = rls.get_roles()
@@ -25,3 +24,11 @@ def test_get_role_codes():
 
 def test_is_valid():
     assert rls.is_valid(rls.TEST_CODE)
+
+@patch('data.roles.ROLES', {"FA": "Fake Author", "FR": "Fake Reviewer"})
+def test_get_role_descriptions():
+    """
+    Test get_role_descriptions with patched ROLES.
+    """
+    descriptions = rls.get_role_descriptions()
+    assert descriptions == ["Fake Author", "Fake Reviewer"]
