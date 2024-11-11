@@ -21,15 +21,15 @@ ROLES = {
 MH_ROLES = [CE_CODE, ED_CODE, ME_CODE]
 
 
-def get_roles() -> dict:
+def get_roles() -> dict:  # with test function
     return deepcopy(ROLES)
 
 
-def get_role_codes() -> list:
+def get_role_codes() -> list:  # with test function
     return list(ROLES.keys())
 
 
-def get_masthead_roles() -> dict:
+def get_masthead_roles() -> dict:  # with test function
     mh_roles = get_roles()
     del_mh_roles = []
     for role in mh_roles:
@@ -40,11 +40,11 @@ def get_masthead_roles() -> dict:
     return mh_roles
 
 
-def is_valid(code: str) -> bool:
+def is_valid(code: str) -> bool:  # with test function
     return code in ROLES
 
 
-def get_role_descriptions() -> list:
+def get_role_descriptions() -> list:  # with test function
     return list(ROLES.values())
 
 

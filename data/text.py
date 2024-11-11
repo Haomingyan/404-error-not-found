@@ -23,7 +23,7 @@ text_dict = {
 }
 
 
-def read():
+def read():  # test function added
     """
     Our contract:
         - No arguments.
@@ -34,7 +34,7 @@ def read():
     return text
 
 
-def create_text(key, title, text):
+def create_text(key, title, text):  # test function added
     """
     Create a new text entry in text_dict.
     - key: A unique identifier for the text
@@ -51,7 +51,7 @@ def create_text(key, title, text):
     return text_dict[key]
 
 
-def update_text(key, title, text):
+def update_text(key, title, text):  # test function added
     if key not in text_dict:
         raise ValueError(f'Text with key "{key}" does not exist.')
     else:
@@ -62,7 +62,7 @@ def update_text(key, title, text):
     return text_dict[key]
 
 
-def delete_text(key):
+def delete_text(key):  # test function added
     """
     Delete an existing text entry in text_dict.
     - key: The unique identifier for the text to delete.

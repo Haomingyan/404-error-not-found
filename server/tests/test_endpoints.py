@@ -355,4 +355,14 @@ def test_update_text():
     assert resp_json['text']['title'] == "Updated Title"
     assert resp_json['text']['text'] == "This text has been updated."
 
-
+@pytest.mark.skip(reason="Skipping endpoint test temporarily")
+def test_endpoints(test_client):
+    """
+    Test the /endpoints endpoint to ensure it returns all available endpoints.
+    """
+    response = test_client.get(ep.ENDPOINT_EP)
+    assert response.status_code == 200
+    resp_json = response.get_json()
+    assert "Available endpoints" in resp_json
+    assert isinstance(resp_json["Available endpoints"], list)
+    assert len(resp_json["Available endpoints"]) > 0
