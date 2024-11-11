@@ -1,11 +1,11 @@
 import unittest
 import mongomock
-import pymongo as pm
+import pymongo
 from unittest.mock import patch
 import data.db_connect as dbc
 
 class TestMongoFunctions(unittest.TestCase):
-    @patch('pm.MongoClient')
+    @patch('pymongo.MongoClient')
     def setUp(self, mock_client):
         # Set up a mock for pymongo.MongoClient
         self.mock_client = mongomock.MongoClient()
@@ -19,6 +19,14 @@ class TestMongoFunctions(unittest.TestCase):
             'players': 2
         }
         self.collection.insert_one(self.sample_data)
+
+    def test_insert_one(self):
+        new_doc = {
+            'title': 'Monopoly',
+            'players': 4
+        }
+        result = dbc.insert_one('test_collection', new_doc)
+        self.assertIsNotNone(result.inserted_id)
 
 if __name__ == '__main__':
     unittest.main()
