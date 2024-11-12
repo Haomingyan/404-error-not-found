@@ -28,5 +28,12 @@ class TestMongoFunctions(unittest.TestCase):
         result = dbc.insert_one('test_collection', new_doc)
         self.assertIsNotNone(result.inserted_id)
 
+    def test_fetch_one(self):
+        filt = {'title': 'Chess'}
+        result = dbc.fetch_one('test_collection', filt)
+        self.assertIsNotNone(result)
+        self.assertEqual(result['title'], 'Chess')
+        self.assertEqual(result['players'], 2)
+
 if __name__ == '__main__':
     unittest.main()
