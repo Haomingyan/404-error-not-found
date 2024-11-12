@@ -35,5 +35,11 @@ class TestMongoFunctions(unittest.TestCase):
         self.assertEqual(result['title'], 'Chess')
         self.assertEqual(result['players'], 2)
 
+    def test_fetch_one_not_found(self):
+        # Try to fetch a document that doesn't exist
+        filt = {'title': 'Checkers'}
+        result = dbc.fetch_one('test_collection', filt)
+        self.assertIsNone(result)
+
 if __name__ == '__main__':
     unittest.main()
