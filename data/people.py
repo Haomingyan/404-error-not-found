@@ -4,9 +4,14 @@ This module interfaces to our user data.
 
 import re
 
+import data.db_connect as dbc
+
 import data.roles as rls
 
+PEOPLE_COLLECT = 'people'
+
 MIN_USER_NAME_LEN = 2
+
 # fields
 NAME = 'name'
 ROLES = 'roles'
@@ -30,6 +35,9 @@ people_dict = {
         EMAIL: DEL_EMAIL,
     },
 }
+
+client = dbc.connect_db()
+print(f'{client=}')
 
 first_part = (
     r"[a-zA-Z0-9]"
@@ -70,14 +78,17 @@ def get_person(email):
         return None
 
 
-def read():
+def read() -> dict:
     """
     Our contract:
         - No arguments.
         - Returns a dictionary of users keyed on user email.
         - Each user email must be the key for another dictionary.
     """
-    people = people_dict
+    people = dbc.read_dict(PEOPLE_COLLECT, EMAIL)
+    if not people:
+        print("There is no people in the mongodb")
+    print(f'{people=}')
     return people
 
 
@@ -89,19 +100,19 @@ def read_one(email: str) -> dict:
     return people_dict.get(email)
 
 
-# def delete_person(_id):
-#     people = read()
-#     if _id in people:
-#         del people[_id]
-#         return _id
-#     else:
-#         return None
-def delete_person(email):
-    if email in people_dict:
-        del people_dict[email]
-        return email
-    else:
+def delete_person(email: str):
+    """
+    Delete a person from MongoDB by email.
+    If the person does not exist, print a message and return None.
+    """
+    person = dbc.fetch_one(PEOPLE_COLLECT, {"email": email})
+    if person is None:
+        print(f'No person found with {email=}')
         return None
+    result = dbc.del_one(PEOPLE_COLLECT, {"email": email})
+    print(result)
+    print(f"Deleted {email=}")
+    return email
 
 
 def create_person(name: str, affiliation: str, email: str, role: str):
@@ -111,8 +122,10 @@ def create_person(name: str, affiliation: str, email: str, role: str):
         roles = []
         if role:
             roles.append(role)
-        people_dict[email] = {NAME: name, AFFILIATION: affiliation,
-                              EMAIL: email, ROLES: roles}
+        person = {NAME: name, AFFILIATION: affiliation,
+                  EMAIL: email, ROLES: roles}
+        print(person)
+        dbc.create(PEOPLE_COLLECT, person)
         return email
 
 
