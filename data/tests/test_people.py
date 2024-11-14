@@ -5,12 +5,14 @@ from data.people import get_person, TEST_EMAIL, NAME, ROLES, AFFILIATION, EMAIL
 from data.people import get_masthead, create_person, delete_person, NAME, ROLES, EMAIL
 from data.roles import TEST_CODE
 from unittest.mock import patch
+import data.db_connect as dbc
 
 TEMP_EMAIL = 'temp_person@temp.org'
 
 START_WITH_SYMBOL = '.kajshd@nyu.edu'
 NO_NAME = "@nyu.edu"
 NO_AT = "tempdadada"
+PEOPLE_COLLECT = 'people'
 
 def test_is_valid_email_start_with_symbol():
     assert not ppl.is_valid_email(START_WITH_SYMBOL)
@@ -115,12 +117,21 @@ def test_get_person():
 
 ADD_EMAIL = 'joe@nyu.edu'
 
+
 def test_create_person():
-    people = ppl.read()
-    assert ADD_EMAIL not in people
+    # Attempt to create the person
     ppl.create_person('Joe Smith', 'NYU', ADD_EMAIL, TEST_CODE)
-    people = ppl.read()
-    assert ADD_EMAIL in people
+
+    # Verify that the person was created in the database
+    created_person = dbc.fetch_one(PEOPLE_COLLECT, {EMAIL: ADD_EMAIL})
+    assert created_person is not None, "Person was not created in the database."
+    assert created_person[EMAIL] == ADD_EMAIL, "Email does not match."
+    assert created_person[NAME] == 'Joe Smith', "Name does not match."
+    assert created_person[AFFILIATION] == 'NYU', "Affiliation does not match."
+    assert TEST_CODE in created_person[ROLES], "Role does not match."
+
+    # Clean up by removing the test document from the collection
+    dbc.del_one(PEOPLE_COLLECT, {EMAIL: ADD_EMAIL})
 
 
 # Second time creating temp_person (duplicate)
@@ -264,6 +275,8 @@ def test_update_person():
     else:
         assert False, "Test failed: Expected ValueError for non-existing person."
     print("Test passed: Updating non-existing person returns ValueError.")
+
+
 
 def test_update_nonexistent_person_exception():
     with pytest.raises(ValueError, match=r"Person with email .* does not exist"):
