@@ -97,7 +97,12 @@ def read_one(email: str) -> dict:
     Return a person record if email present in DB,
     else None.
     """
-    return people_dict.get(email)
+    person = dbc.fetch_one(PEOPLE_COLLECT, {"email": email})
+    if person is None:
+        print(f'No person found with {email=}')
+    else:
+        print(f'Found person: {person}')
+    return person
 
 
 def delete_person(email: str):
