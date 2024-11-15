@@ -79,18 +79,31 @@ def test_is_valid_email_no_at():
     assert not ppl.is_valid_email(NO_AT)
 
 def test_delete_person():
-    # Test deleting an existing person
-    people = ppl.read()
-    assert ppl.DEL_EMAIL in people
-    deleted_person = ppl.delete_person(ppl.DEL_EMAIL)
-    assert deleted_person == ppl.DEL_EMAIL
-    updated_people = ppl.read()
-    assert ppl.DEL_EMAIL not in updated_people
+    # Define test data
+    DEL_EMAIL = 'delete_me@nyu.edu'
+    NAME = 'Delete Me'
+    AFFILIATION = 'NYU'
+
+    # First, create the person to be deleted
+    ppl.create_person(NAME, AFFILIATION, DEL_EMAIL, TEST_CODE)
+
+    # Verify that the person was created in the database
+    person = dbc.fetch_one(PEOPLE_COLLECT, {EMAIL: DEL_EMAIL})
+    assert person is not None, "Person to be deleted was not created."
+
+    # Test deleting the existing person
+    deleted_email = ppl.delete_person(DEL_EMAIL)
+    assert deleted_email == DEL_EMAIL, "Deleted email does not match."
+
+    # Verify that the person was deleted from the database
+    person = dbc.fetch_one(PEOPLE_COLLECT, {EMAIL: DEL_EMAIL})
+    assert person is None, "Person was not deleted from the database."
 
     # Test deleting a non-existing person
     non_existing_email = 'nonexistent@nyu.edu'
-    deleted_person = ppl.delete_person(non_existing_email)
-    assert deleted_person is None
+    deleted_email = ppl.delete_person(non_existing_email)
+    assert deleted_email is None, "Deleting a non-existing person should return None."
+
 
 def test_get_person():
     # Test with an existing email
@@ -137,12 +150,8 @@ def test_create_person():
 # Second time creating temp_person (duplicate)
 
 def test_create_duplicate_person():
-    ppl.create_person('Joe Smith', 'NYU', TEMP_EMAIL, 'AU')
-
     with pytest.raises(ValueError, match="Adding duplicate email"):
         ppl.create_person('Joe Smith', 'NYU', TEMP_EMAIL, 'AU')
-
-    dbc.del_one(PEOPLE_COLLECT, {EMAIL: TEMP_EMAIL})
 
 
 UPDATE_EMAIL = TEST_EMAIL
