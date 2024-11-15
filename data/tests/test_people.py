@@ -289,8 +289,6 @@ def test_update_person():
     else:
         assert False, "Test failed: Expected ValueError for non-existing person."
 
-
-
 def test_update_nonexistent_person_exception():
     with pytest.raises(ValueError, match=r"Person with email .* does not exist"):
         ppl.update_person(
