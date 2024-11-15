@@ -135,9 +135,14 @@ def test_create_person():
 
 
 # Second time creating temp_person (duplicate)
-def test_create_duplicate_person(temp_person):
+
+def test_create_duplicate_person():
+    ppl.create_person('Joe Smith', 'NYU', TEMP_EMAIL, 'AU')
+
     with pytest.raises(ValueError, match="Adding duplicate email"):
         ppl.create_person('Joe Smith', 'NYU', TEMP_EMAIL, 'AU')
+
+    dbc.del_one(PEOPLE_COLLECT, {EMAIL: TEMP_EMAIL})
 
 
 UPDATE_EMAIL = TEST_EMAIL
@@ -231,14 +236,22 @@ def test_get_masthead():
     print("Test passed: get_masthead returns correct masthead people and excludes non-masthead people.")
 
 def test_update_person():
-    # 定义新的角色
+    UPDATE_EMAIL = 'joe.smith@nyu.edu'
+    INITIAL_NAME = 'Joe Smith'
+    INITIAL_AFFILIATION = 'NYU'
+    NEW_NAME = 'Joseph Smith'
+    NEW_AFFILIATION = 'New York University'
     NEW_ROLE = 'editor'
 
-    # Test updating an existing person
-    person = get_person(UPDATE_EMAIL)
-    assert person is not None, "Test failed: Person does not exist."
+    ppl.create_person(INITIAL_NAME, INITIAL_AFFILIATION, UPDATE_EMAIL, TEST_CODE)
 
-    # Update the person's information
+    created_person = dbc.fetch_one(PEOPLE_COLLECT, {EMAIL: UPDATE_EMAIL})
+    assert created_person is not None, "Person was not created in the database."
+    assert created_person[EMAIL] == UPDATE_EMAIL, "Email does not match."
+    assert created_person[NAME] == INITIAL_NAME, "Name does not match."
+    assert created_person[AFFILIATION] == INITIAL_AFFILIATION, "Affiliation does not match."
+    assert TEST_CODE in created_person.get(ROLES, []), "Role does not match."
+
     try:
         updated_person = ppl.update_person(
             name=NEW_NAME,
@@ -249,32 +262,32 @@ def test_update_person():
     except ValueError as e:
         assert False, f"Test failed: {str(e)}"
 
-    # Verify that the person's information has been updated
-    assert updated_person[NAME] == NEW_NAME
-    assert updated_person[AFFILIATION] == NEW_AFFILIATION
-    assert NEW_ROLE in updated_person[ROLES], "Test failed: Role not updated."
+    assert updated_person[NAME] == NEW_NAME, "Name was not updated correctly."
+    assert updated_person[AFFILIATION] == NEW_AFFILIATION, "Affiliation was not updated correctly."
+    assert NEW_ROLE in updated_person.get(ROLES, []), "Role was not updated correctly."
 
-    # Fetch the updated person and check
-    updated_person_from_db = get_person(UPDATE_EMAIL)
-    assert updated_person_from_db[NAME] == NEW_NAME
-    assert updated_person_from_db[AFFILIATION] == NEW_AFFILIATION
-    assert NEW_ROLE in updated_person_from_db[ROLES], "Test failed: Role not updated."
-    print("Test passed: Existing person updated successfully.")
+    updated_person_from_db = dbc.fetch_one(PEOPLE_COLLECT, {EMAIL: UPDATE_EMAIL})
+    assert updated_person_from_db[NAME] == NEW_NAME, "Name in DB was not updated correctly."
+    assert updated_person_from_db[AFFILIATION] == NEW_AFFILIATION, "Affiliation in DB was not updated correctly."
+    assert NEW_ROLE in updated_person_from_db.get(ROLES, []), "Role in DB was not updated correctly."
 
-    # Test updating a non-existing person
-    non_existing_email = 'nonexistent@example.com'
+    dbc.del_one(PEOPLE_COLLECT, {EMAIL: UPDATE_EMAIL})
+
+    print("Test passed: Person updated successfully.")
+
+    NON_EXISTING_EMAIL = 'nonexistent@example.com'
     try:
         ppl.update_person(
             name='Non Existent',
             affiliation='None',
-            email=non_existing_email,
+            email=NON_EXISTING_EMAIL,
             role='some_role'
         )
     except ValueError as e:
-        assert str(e) == f'Person with email {non_existing_email} does not exist', "Test failed: Incorrect error message."
+        assert str(e) == f'Person with email {NON_EXISTING_EMAIL} does not exist', "Test failed: Incorrect error message."
+        print("Test passed: Updating non-existing person returns ValueError.")
     else:
         assert False, "Test failed: Expected ValueError for non-existing person."
-    print("Test passed: Updating non-existing person returns ValueError.")
 
 
 
