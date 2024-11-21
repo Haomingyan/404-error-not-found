@@ -60,7 +60,7 @@ def test_create_mh_rec(temp_person):
         assert field in mh_rec
 
 
-def test_read():
+def test_read(temp_person):
     people = ppl.read()
     assert isinstance(people, dict)
     assert len(people) > 0
@@ -71,6 +71,12 @@ def test_read():
 
 def test_read_one(temp_person):
     assert ppl.read_one(temp_person) is not None
+
+def test_exists(temp_person):
+    assert ppl.exists(temp_person)
+
+def test_does_not_exist():
+    assert not ppl.exists('Not a existing email') is None
 
 def test_read_one_nonexistent():
     assert ppl.read_one('nonexistent@nyu.edu') is None
