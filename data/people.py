@@ -202,7 +202,8 @@ def update_person(name: str, affiliation: str, email: str, role: str):
             AFFILIATION: affiliation
         }
 
-        # Check if the role is not already in the roles list and add it if necessary
+        # Check if the role is not already in the
+        # roles list and add it if necessary
         if role and role not in person.get(ROLES, []):
             update_fields[ROLES] = person.get(ROLES, []) + [role]
 
