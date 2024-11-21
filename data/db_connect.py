@@ -50,16 +50,38 @@ def create(collection, doc, db=SE_DB):
     return client[db][collection].insert_one(doc)
 
 
+# def fetch_one(collection, filt, db=SE_DB):
+#     """
+#     Find with a filter and return on the first doc found.
+#     Return None if not found.
+#     """
+#     for doc in client[db][collection].find(filt):
+#         if MONGO_ID in doc:
+#             # Convert mongo ID to a string so it works as JSON
+#             doc[MONGO_ID] = str(doc[MONGO_ID])
+#         return doc
+
 def fetch_one(collection, filt, db=SE_DB):
     """
-    Find with a filter and return on the first doc found.
-    Return None if not found.
+    Find a document with a filter and return the first document found.
+    Converts the MongoDB `_id` to a string for JSON compatibility.
+    Returns None if no document is found.
     """
-    for doc in client[db][collection].find(filt):
-        if MONGO_ID in doc:
-            # Convert mongo ID to a string so it works as JSON
+    try:
+        doc = client[db][collection].find_one(filt)
+        if doc and MONGO_ID in doc:
+            # Convert MongoDB ObjectID to string
             doc[MONGO_ID] = str(doc[MONGO_ID])
         return doc
+    except Exception as e:
+        print(f"Error in fetch_one: {e}")
+        return None
+
+
+def convert_mongo_id(doc: dict):
+    if MONGO_ID in doc:
+        # Convert mongo ID to a string so it works as JSON
+        doc[MONGO_ID] = str(doc[MONGO_ID])
 
 
 def delete(collection: str, filt: dict, db=SE_DB):
