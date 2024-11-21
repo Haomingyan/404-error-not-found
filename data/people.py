@@ -99,8 +99,10 @@ def read_one(email: str) -> dict:
     """
     return dbc.read_one(PEOPLE_COLLECT, {EMAIL: email})
 
+
 def exists(email: str) -> bool:
     return read_one(email) is not None
+
 
 def delete_person(email: str):
     """

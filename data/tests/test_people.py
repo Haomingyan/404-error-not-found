@@ -78,6 +78,10 @@ def test_exists(temp_person):
 def test_does_not_exist():
     assert not ppl.exists('Not a existing email') is None
 
+def test_doesnt_have_role(temp_person):
+    person_rec = ppl.read_one(temp_person)
+    assert not ppl.has_arole(person_rec, 'Not a good role!')
+
 def test_read_one_nonexistent():
     assert ppl.read_one('nonexistent@nyu.edu') is None
 
