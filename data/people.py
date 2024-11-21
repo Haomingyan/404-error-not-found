@@ -114,7 +114,7 @@ def delete_person(email: str):
     if person is None:
         print(f'No person found with {email=}')
         return None
-    result = dbc.del_one(PEOPLE_COLLECT, {"email": email})
+    result = dbc.delete(PEOPLE_COLLECT, {"email": email})
     print(result)
     print(f"Deleted {email=}")
     return email

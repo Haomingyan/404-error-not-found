@@ -144,7 +144,7 @@ def test_create_person():
     assert TEST_CODE in created_person[ROLES], "Role does not match."
 
     # Clean up by removing the test document from the collection
-    dbc.del_one(PEOPLE_COLLECT, {EMAIL: ADD_EMAIL})
+    dbc.delete(PEOPLE_COLLECT, {EMAIL: ADD_EMAIL})
 
 
 # Second time creating temp_person (duplicate)
@@ -280,7 +280,7 @@ def test_update_person():
     assert updated_person_from_db[AFFILIATION] == NEW_AFFILIATION, "Affiliation in DB was not updated correctly."
     assert NEW_ROLE in updated_person_from_db.get(ROLES, []), "Role in DB was not updated correctly."
 
-    dbc.del_one(PEOPLE_COLLECT, {EMAIL: UPDATE_EMAIL})
+    dbc.delete(PEOPLE_COLLECT, {EMAIL: UPDATE_EMAIL})
 
     print("Test passed: Person updated successfully.")
 
