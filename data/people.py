@@ -104,6 +104,8 @@ def read_one(email: str) -> dict:
         print(f'Found person: {person}')
     return person
 
+def exists(email: str) -> bool:
+    return read_one(email) is not None
 
 def delete_person(email: str):
     """

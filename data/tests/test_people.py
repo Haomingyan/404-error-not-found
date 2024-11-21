@@ -60,7 +60,7 @@ def test_create_mh_rec(temp_person):
         assert field in mh_rec
 
 
-def test_read():
+def test_read(temp_person):
     people = ppl.read()
     assert isinstance(people, dict)
     assert len(people) > 0
