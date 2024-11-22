@@ -20,6 +20,9 @@ class TestMongoFunctions(unittest.TestCase):
         }
         self.collection.insert_one(self.sample_data)
 
+    def tearDown(self):
+        self.collection.delete_one({})
+
     def test_insert_one(self):
         new_doc = {
             'title': 'Monopoly',
@@ -27,6 +30,10 @@ class TestMongoFunctions(unittest.TestCase):
         }
         result = dbc.insert_one('test_collection', new_doc)
         self.assertIsNotNone(result.inserted_id)
+
+        inserted_doc = self.collection.find_one({'title': 'Monopoly'})
+        self.assertIsNotNone(inserted_doc)
+        self.assertEqual(inserted_doc['players'], 4)
 
     def test_fetch_one(self):
         filt = {'title': 'Chess'}
