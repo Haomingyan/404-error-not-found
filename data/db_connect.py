@@ -90,7 +90,7 @@ def read_one(collection, filt, db=SE_DB):
 
 def convert_mongo_id(doc: dict):
     if MONGO_ID in doc:
-        # Convert mongo ID to a string so it works as JSON
+        # Convert mongo ID to a string so that it works as JSON
         doc[MONGO_ID] = str(doc[MONGO_ID])
 
 
