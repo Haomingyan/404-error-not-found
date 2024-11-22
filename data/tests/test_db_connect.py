@@ -48,5 +48,16 @@ class TestMongoFunctions(unittest.TestCase):
         result = dbc.fetch_one('test_collection', filt)
         self.assertIsNone(result)
 
+    def test_delete(self):
+        # Test deleting a document
+        filt = {'title': 'Chess'}
+        deleted_count = dbc.delete('test_collection', filt, db='seDB')
+        self.assertEqual(deleted_count, 1)
+
+        # Verify the document was deleted
+        deleted_doc = self.collection.find_one({'title': 'Chess'})
+        self.assertIsNone(deleted_doc)
+
+
 if __name__ == '__main__':
     unittest.main()
