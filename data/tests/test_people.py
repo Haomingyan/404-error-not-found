@@ -12,6 +12,8 @@ TEMP_EMAIL = 'temp_person@temp.org'
 START_WITH_SYMBOL = '.kajshd@nyu.edu'
 NO_NAME = "@nyu.edu"
 NO_AT = "tempdadada"
+NO_DOMAIN = 'kajshd@'
+NO_SUB_DOMAIN = 'kajshd@com'
 PEOPLE_COLLECT = 'people'
 
 def test_is_valid_email_start_with_symbol():
@@ -317,3 +319,5 @@ def test_update_nonexistent_person_exception():
             role="author"
         )
 
+def test_is_valid_no_domain():
+    assert not ppl.is_valid_email(NO_DOMAIN)
