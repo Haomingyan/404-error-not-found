@@ -321,3 +321,6 @@ def test_update_nonexistent_person_exception():
 
 def test_is_valid_no_domain():
     assert not ppl.is_valid_email(NO_DOMAIN)
+
+def test_is_valid_no_sub_domain():
+    assert not ppl.is_valid_email(NO_SUB_DOMAIN)
