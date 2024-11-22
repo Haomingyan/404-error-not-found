@@ -78,6 +78,16 @@ def fetch_one(collection, filt, db=SE_DB):
         return None
 
 
+def read_one(collection, filt, db=SE_DB):
+    """
+    Find with a filter and return on the first doc found.
+    Return None if not found.
+    """
+    for doc in client[db][collection].find(filt):
+        convert_mongo_id(doc)
+        return doc
+
+
 def convert_mongo_id(doc: dict):
     if MONGO_ID in doc:
         # Convert mongo ID to a string so it works as JSON
