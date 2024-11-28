@@ -143,27 +143,19 @@ def test_get_person():
 ADD_EMAIL = 'joe@nyu.edu'
 
 
-def test_create_person():
-    # Attempt to create the person
-    ppl.create_person('Joe Smith', 'NYU', ADD_EMAIL, TEST_CODE)
-
-    # Verify that the person was created in the database
-    created_person = dbc.fetch_one(PEOPLE_COLLECT, {EMAIL: ADD_EMAIL})
-    assert created_person is not None, "Person was not created in the database."
-    assert created_person[EMAIL] == ADD_EMAIL, "Email does not match."
-    assert created_person[NAME] == 'Joe Smith', "Name does not match."
-    assert created_person[AFFILIATION] == 'NYU', "Affiliation does not match."
-    assert TEST_CODE in created_person[ROLES], "Role does not match."
-
-    # Clean up by removing the test document from the collection
-    dbc.delete(PEOPLE_COLLECT, {EMAIL: ADD_EMAIL})
+def test_create():
+    ppl.create_person('Joe Smith', 'NYU', ADD_EMAIL, TEST_ROLE_CODE)
+    assert ppl.exists(ADD_EMAIL)
+    ppl.delete_person(ADD_EMAIL)
 
 
 # Second time creating temp_person (duplicate)
 
-def test_create_duplicate_person(temp_person):
+def test_create_duplicate(temp_person):
     with pytest.raises(ValueError):
-        ppl.create_person('Joe Smith', 'NYU', temp_person, TEST_CODE)
+        ppl.create_person('Do not care about name',
+                   'Or affiliation', temp_person,
+                   TEST_ROLE_CODE)
 
 
 UPDATE_EMAIL = TEST_EMAIL

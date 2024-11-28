@@ -120,7 +120,7 @@ def delete_person(email: str):
 
 
 def create_person(name: str, affiliation: str, email: str, role: str):
-    if email in people_dict:
+    if exists(email):
         raise ValueError(f'Adding duplicate {email=}')
     if is_valid_person(name, affiliation, email, role=role):
         roles = []
