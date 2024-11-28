@@ -271,3 +271,19 @@ def test_is_valid_no_domain():
 
 def test_is_valid_no_sub_domain():
     assert not ppl.is_valid_email(NO_SUB_DOMAIN)
+
+VALID_ROLES = ['ED', 'AU']
+
+TEST_UPDATE_NAME = 'Buffalo Bill'
+
+
+def test_update(temp_person):
+    ppl.update_person(TEST_UPDATE_NAME, 'UBuffalo', temp_person, VALID_ROLES[0])
+    updated_rec = ppl.read_one(temp_person)
+    assert updated_rec[ppl.NAME] == TEST_UPDATE_NAME
+
+
+def test_update_not_there(temp_person):
+    with pytest.raises(ValueError):
+        ppl.update_person('Will Fail', 'University of the Void',
+                   'Non-existent email', VALID_ROLES[0])

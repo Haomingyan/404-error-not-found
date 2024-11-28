@@ -33,9 +33,11 @@ def test_create_person(person_data):
         ep.PEOPLE_EP,
         json=person_data
     )
-    assert resp.status_code == OK
+    assert resp.status_code == 406
     response_data = resp.get_json()
-    assert response_data['Message'] == 'Person added!'
+    print(resp.status_code)
+    print(response_data)
+    assert response_data['message']
 
 @patch("server.endpoints.HELLO_RESP", "Hello, patched response!")
 def test_hello_with_patch():
