@@ -219,39 +219,35 @@ def test_update_nonexistent_person(non_existent_person_data):
     )
 
 
-def test_update_person():
-
-    person_data = {
-        "name": "Original Name",
-        "affiliation": "Original Affiliation",
-        "email": "updateuser@example.com",
-        "role": "author"
-    }
-
-    resp = TEST_CLIENT.post(
-        ep.PEOPLE_EP,
-        json=person_data
-    )
-    assert resp.status_code == 200
-
-    updated_data = {
+@patch('data.people.update_person', autospec=True, return_value={
+    'id': '1234',
+    'name': 'Updated Name',
+    'affiliation': 'Updated Affiliation',
+    'email': 'updateuser@example.com',
+    'roles': ['editor']
+})
+def test_update(mock_update):
+    update_data = {
+        "id": "1234",
         "name": "Updated Name",
         "affiliation": "Updated Affiliation",
         "email": "updateuser@example.com",
         "role": "editor"
     }
-
     resp = TEST_CLIENT.put(
         ep.PEOPLE_EP,
-        json=updated_data
+        json=update_data
     )
-
-    assert resp.status_code == 200
+    assert resp.status_code == OK
     resp_json = resp.get_json()
     assert resp_json['Message'] == 'Person updated successfully'
-    assert resp_json['return']['name'] == "Updated Name"
-    assert resp_json['return']['affiliation'] == "Updated Affiliation"
-    assert "editor" in resp_json['return']['roles']
+    mock_update.assert_called_once_with(
+        "Updated Name",
+        "Updated Affiliation",
+        "updateuser@example.com",
+        "editor"
+    )
+
 
 def test_create_text():
     text_data = {
