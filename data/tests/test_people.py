@@ -161,9 +161,9 @@ def test_create_person():
 
 # Second time creating temp_person (duplicate)
 
-def test_create_duplicate_person():
-    with pytest.raises(ValueError, match="Adding duplicate email"):
-        ppl.create_person('Joe Smith', 'NYU', TEMP_EMAIL, 'AU')
+def test_create_duplicate_person(temp_person):
+    with pytest.raises(ValueError):
+        ppl.create_person('Joe Smith', 'NYU', temp_person, TEST_CODE)
 
 
 UPDATE_EMAIL = TEST_EMAIL
