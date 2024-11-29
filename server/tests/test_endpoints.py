@@ -17,27 +17,6 @@ import server.endpoints as ep
 
 TEST_CLIENT = ep.app.test_client()
 
-# Fixture for person data
-@pytest.fixture
-def person_data():
-    return {
-        "name": "Test",
-        "affiliation": "Test",
-        "email": "testuser@example.com",
-        "role": "AU"
-    }
-
-# Modified test_create_person to use fixture
-def test_create_person(person_data):
-    resp = TEST_CLIENT.post(
-        ep.PEOPLE_EP,
-        json=person_data
-    )
-    assert resp.status_code == 406
-    response_data = resp.get_json()
-    print(resp.status_code)
-    print(response_data)
-    assert response_data['message']
 
 @patch("server.endpoints.HELLO_RESP", "Hello, patched response!")
 def test_hello_with_patch():
@@ -72,8 +51,30 @@ def test_title():
 #     assert resp.status_code == 200
 #     response_data = resp.get_json()
 #     assert response_data['Message'] == 'Person added!'
+# Fixture for person data
+@pytest.fixture
+def person_data():
+    return {
+        "name": "Test",
+        "affiliation": "Test",
+        "email": "testuser8@example.com",
+        "role": "AU"
+    }
 
-@pytest.mark.skip(reason="Skipping this test temporarily")
+# Modified test_create_person to use fixture
+def test_create_person(person_data):
+    resp = TEST_CLIENT.post(
+        ep.PEOPLE_EP,
+        json=person_data
+    )
+    assert resp.status_code == OK
+    response_data = resp.get_json()
+    print(resp.status_code)
+    print(response_data)
+    assert response_data['Message'] == 'Person added!'
+
+
+# @pytest.mark.skip(reason="Skipping this test temporarily")
 # using the fixture person_data
 def test_create_duplicate_person(person_data):
     resp = TEST_CLIENT.post(
