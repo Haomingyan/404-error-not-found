@@ -74,6 +74,16 @@ def delete_text(key):  # test function added
     return f'Text with key "{key}" has been deleted.'
 
 
+def read_one(key: str) -> dict:
+    # This should take a key and return the page dictionary
+    # for that key. Return an empty dictionary of key not found.
+    result = {}
+    if key in text_dict:
+        result = text_dict[key]
+    return result
+
+
+
 def main():
     print(read())
 
