@@ -7,7 +7,7 @@ from data.roles import TEST_CODE
 from unittest.mock import patch
 import data.db_connect as dbc
 
-TEMP_EMAIL = 'temp_person@temp.org'
+TEMP_EMAIL = 'temp_person2@temp.org'
 
 START_WITH_SYMBOL = '.kajshd@nyu.edu'
 NO_NAME = "@nyu.edu"
@@ -25,9 +25,12 @@ def test_is_valid_no_name():
 
 @pytest.fixture(scope='function')
 def temp_person():
-    _id = ppl.create_person('Joe Smith', 'NYU', TEMP_EMAIL, TEST_ROLE_CODE)
-    yield _id
-    ppl.delete_person(_id)
+    email = ppl.create_person('Joe Smith', 'NYU', TEMP_EMAIL, TEST_ROLE_CODE)
+    yield email
+    try:
+        ppl.delete_person(email)
+    except:
+        print('Person already deleted.')
 
 
 @pytest.fixture
