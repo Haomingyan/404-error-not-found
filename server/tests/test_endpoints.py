@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from http.client import (
     BAD_REQUEST,
     FORBIDDEN,
@@ -85,25 +86,34 @@ def test_create_person(person_data):
         assert delete_resp.status_code == OK, f"Cleanup failed: {delete_resp.get_json()}"
 
 
-# # @pytest.mark.skip(reason="Skipping this test temporarily")
-# # using the fixture person_data
-def test_create_duplicate_person():
-    # The duplicate person
-    person_data = {
-        "name": "Test",
-        "affiliation": "Test",
-        "email": "newtestuser3@example.com",
-        "role": "AU"
-    }
-    # Create the duplicate person
-    resp = TEST_CLIENT.post(
+def test_create_duplicate_person(person_data):
+    try:
+        # Step 1: Create the first person
+        first_resp = TEST_CLIENT.post(
             ep.PEOPLE_EP,
             json=person_data
-    )
-    assert resp.status_code == 406
-    response = resp.get_json()
-    print(response)
-    assert 'duplicate' in response['message']
+        )
+        assert first_resp.status_code == OK
+        first_response_data = first_resp.get_json()
+        assert first_response_data['Message'] == 'Person added!'
+        print("First Creation Response Data:", first_response_data)
+
+        # Step 2: Attempt to create the same person again
+        duplicate_resp = TEST_CLIENT.post(
+            ep.PEOPLE_EP,
+            json=person_data
+        )
+        assert duplicate_resp.status_code == 406
+        duplicate_response_data = duplicate_resp.get_json()
+        print("Duplicate Creation Response Data:", duplicate_response_data)
+    finally:
+        # Cleanup: Delete the created person
+        delete_resp = TEST_CLIENT.delete(
+            ep.PEOPLE_EP,
+            json={"email": person_data["email"]}
+        )
+        print("DELETE Response:", delete_resp.get_json())
+        assert delete_resp.status_code == OK, f"Cleanup failed: {delete_resp.get_json()}"
 
 
 def test_get_texts():
