@@ -81,3 +81,7 @@ def test_update_nonexistent_text():
         txt.update_text(nonexistent_key,new_title,new_text)
         
     assert str(exc_info.value) == f'Text with key "{nonexistent_key}" does not exist.'
+
+
+def test_read_one():
+    assert len(txt.read_one(txt.TEST_KEY)) > 0
