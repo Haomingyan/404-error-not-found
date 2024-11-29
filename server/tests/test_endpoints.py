@@ -57,30 +57,29 @@ def person_data():
     return {
         "name": "Test",
         "affiliation": "Test",
-        "email": "newtestuser3@example.com",
+        "email": "newtestuser4@example.com",
         "role": "AU"
     }
 
 # Modified test_create_person to use fixture
 def test_create_person(person_data):
     try:
-        # Step 1: Create a new person
+        # Create a new person
         resp = TEST_CLIENT.post(
             ep.PEOPLE_EP,
             json=person_data
         )
         assert resp.status_code == OK
         response_data = resp.get_json()
-        print(response_data)
         assert response_data['Message'] == 'Person added!'
 
-        # Debug: Check if the resource exists
+        # Check if the resource exists
         print("POST Response Data:", response_data)
     finally:
-        # Step 2: Cleanup - Delete the created person
+        # Delete the created person
         delete_resp = TEST_CLIENT.delete(
             ep.PEOPLE_EP,
-            json={"email": "newtestuser3@example.com"}
+            json={"email": "newtestuser4@example.com"}
         )
         print("DELETE Response:", delete_resp.get_json())
         assert delete_resp.status_code == OK, f"Cleanup failed: {delete_resp.get_json()}"
@@ -88,27 +87,23 @@ def test_create_person(person_data):
 
 # # @pytest.mark.skip(reason="Skipping this test temporarily")
 # # using the fixture person_data
-# def test_create_duplicate_person(person_data):
-# #     resp = TEST_CLIENT.post(
-# #         ep.PEOPLE_EP,
-# #         json=person_data
-# #     )
-#     # test_data = {
-#     #         "name": "Test",
-#     #         "affiliation": "Test",
-#     #         "email": "newtestuser@example.com",
-#     #         "role": "AU"
-#     #     }
-
-#     # Create the duplicate person to be deleted
-#     resp = TEST_CLIENT.post(
-#             ep.PEOPLE_EP,
-#             json=person_data
-#     )
-#     assert resp.status_code == 406
-#     response = resp.get_json()
-#     print(response)
-#     assert 'duplicate' in response['message']
+def test_create_duplicate_person():
+    # The duplicate person
+    person_data = {
+        "name": "Test",
+        "affiliation": "Test",
+        "email": "newtestuser3@example.com",
+        "role": "AU"
+    }
+    # Create the duplicate person
+    resp = TEST_CLIENT.post(
+            ep.PEOPLE_EP,
+            json=person_data
+    )
+    assert resp.status_code == 406
+    response = resp.get_json()
+    print(response)
+    assert 'duplicate' in response['message']
 
 
 def test_get_texts():
