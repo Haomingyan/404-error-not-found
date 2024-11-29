@@ -297,3 +297,11 @@ def test_create_person_no_role():
     assert person == email
     assert ppl.exists(email)
     ppl.delete_person(email)
+
+def test_create_person_multiple_roles():
+    email = 'multipleroles@nyu.edu'
+    person = ppl.create_person('Multi Role User', 'NYU', email, role=VALID_ROLES[0])
+    updated_person = ppl.update_person(name='Multi Role User', affiliation='NYU', email=email, role=VALID_ROLES[1])
+    assert VALID_ROLES[0] in updated_person[ROLES]
+    assert VALID_ROLES[1] in updated_person[ROLES]
+    ppl.delete_person(email)
