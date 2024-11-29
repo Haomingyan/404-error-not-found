@@ -290,3 +290,10 @@ def test_update_not_there(temp_person):
     with pytest.raises(ValueError):
         ppl.update_person('Will Fail', 'University of the Void',
                    'Non-existent email', VALID_ROLES[0])
+
+def test_create_person_no_role():
+    email = 'noroletest@nyu.edu'
+    person = ppl.create_person('No Role Test', 'NYU', email, role=None)
+    assert person == email
+    assert ppl.exists(email)
+    ppl.delete_person(email)
