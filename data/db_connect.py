@@ -30,7 +30,7 @@ def connect_db():
         if os.environ.get("CLOUD_MONGO", LOCAL) == CLOUD:
             password = os.environ.get("GAME_MONGO_PW")
             if not password:
-                raise ValueError('You must set your password '
+                raise ValueError('You must set MONGO_PW to your password '
                                  + 'to use Mongo in the cloud.')
             print("Connecting to Mongo in the cloud.")
             client = pm.MongoClient(f'mongodb+srv://gcallah:{password}'
