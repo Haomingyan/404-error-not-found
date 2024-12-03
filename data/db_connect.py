@@ -33,9 +33,11 @@ def connect_db():
                 raise ValueError('You must set MONGO_PW to your password '
                                  + 'to use Mongo in the cloud.')
             print("Connecting to Mongo in the cloud.")
-            client = pm.MongoClient(f'mongodb+srv://404-error-not-found:{password}'
+            client = pm.MongoClient('mongodb+srv://'
+                                    f'404-error-not-found:{password}'
                                     + '@cluster0.cmb6h.mongodb.net/'
-                                    + '?retryWrites=true&w=majority&appName=Cluster0')
+                                    + '?retryWrites=true&w=majority&'
+                                    + 'appName=Cluster0')
         else:
             print("Connecting to Mongo locally.")
             client = pm.MongoClient()
