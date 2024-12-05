@@ -19,3 +19,24 @@ def get_states() -> list:
 
 def is_valid_state(state: str) -> bool:
     return state in VALID_STATES
+
+
+ACCEPT = 'ACC'
+ASSIGN_REF = 'ARF'
+DONE = 'DON'
+REJECT = 'REJ'
+
+VALID_ACTIONS = [
+    ACCEPT,
+    ASSIGN_REF,
+    DONE,
+    REJECT
+]
+
+
+def get_actions() -> list:
+    return VALID_ACTIONS
+
+
+
+
