@@ -38,5 +38,7 @@ def get_actions() -> list:
     return VALID_ACTIONS
 
 
+def is_valid_action(action: str) -> bool:
+    return action in VALID_ACTIONS
 
 
