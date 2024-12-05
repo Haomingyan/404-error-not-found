@@ -147,10 +147,9 @@ def test_get_person():
     else:
         print("Test failed: Non-existing email does not return None.")
 
-ADD_EMAIL = 'joe@nyu.edu'
-
 
 def test_create():
+    ADD_EMAIL = 'joe@nyu.edu'
     existing = dbc.fetch_one(PEOPLE_COLLECT, {EMAIL: ADD_EMAIL})
     if existing is not None:
         ppl.delete_person(ADD_EMAIL)
@@ -220,9 +219,10 @@ def test_update_person():
     NEW_NAME = 'Joseph Smith'
     NEW_AFFILIATION = 'New York University'
     NEW_ROLE = 'editor'
-
+    existing = dbc.fetch_one(PEOPLE_COLLECT, {EMAIL: UPDATE_EMAIL})
+    if existing is not None:
+        ppl.delete_person(UPDATE_EMAIL)
     ppl.create_person(INITIAL_NAME, INITIAL_AFFILIATION, UPDATE_EMAIL, TEST_CODE)
-
     created_person = dbc.fetch_one(PEOPLE_COLLECT, {EMAIL: UPDATE_EMAIL})
     assert created_person is not None, "Person was not created in the database."
     assert created_person[EMAIL] == UPDATE_EMAIL, "Email does not match."
