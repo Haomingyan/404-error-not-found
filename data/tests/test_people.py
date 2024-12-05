@@ -99,6 +99,10 @@ def test_delete_person():
     NAME = 'Delete Me'
     AFFILIATION = 'NYU'
 
+    existing = dbc.fetch_one(PEOPLE_COLLECT, {EMAIL: DEL_EMAIL})
+    if existing is not None:
+        ppl.delete_person(DEL_EMAIL)
+
     # First, create the person to be deleted
     ppl.create_person(NAME, AFFILIATION, DEL_EMAIL, TEST_CODE)
 
@@ -147,6 +151,9 @@ ADD_EMAIL = 'joe@nyu.edu'
 
 
 def test_create():
+    existing = dbc.fetch_one(PEOPLE_COLLECT, {EMAIL: ADD_EMAIL})
+    if existing is not None:
+        ppl.delete_person(ADD_EMAIL)
     ppl.create_person('Joe Smith', 'NYU', ADD_EMAIL, TEST_ROLE_CODE)
     assert ppl.exists(ADD_EMAIL)
     ppl.delete_person(ADD_EMAIL)
