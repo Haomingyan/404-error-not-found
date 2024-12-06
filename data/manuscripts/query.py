@@ -1,4 +1,5 @@
 # states:
+AUTHOR_REV = 'AUR'
 COPY_EDIT = 'CED'
 IN_REF_REV = 'REV'
 REJECTED = 'REJ'
@@ -40,5 +41,38 @@ def get_actions() -> list:
 
 def is_valid_action(action: str) -> bool:
     return action in VALID_ACTIONS
+
+
+FUNC = 'f'
+
+STATE_TABLE = {
+    SUBMITTED: {
+        ASSIGN_REF: {
+            # These next lines are alternatives that work the same.
+            # FUNC: sub_assign_ref,
+            FUNC: lambda m: IN_REF_REV,
+        },
+        REJECT: {
+            FUNC: lambda m: REJECTED,
+        },
+    },
+    IN_REF_REV: {
+    },
+    COPY_EDIT: {
+        DONE: {
+            FUNC: lambda m: AUTHOR_REV,
+        },
+    },
+    AUTHOR_REV: {
+    },
+    REJECTED: {
+    },
+}
+
+
+def get_valid_actions_by_state(state: str):
+    valid_actions = STATE_TABLE[state].keys()
+    print(f'{valid_actions=}')
+    return valid_actions
 
 
