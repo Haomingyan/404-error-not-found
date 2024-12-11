@@ -24,3 +24,15 @@ def get_form_descr():
     """
     return ff.get_form_descr(FORM_FLDS)
 
+def get_fld_names() -> list:
+    return ff.get_fld_names(FORM_FLDS)
+
+
+def main():
+    print(f'Form: {get_form()=}')
+    print(f'Form: {get_form_descr()=}')
+    print(f'Field names: {get_fld_names()=}')
+
+
+if __name__ == "__main__":
+    main()
