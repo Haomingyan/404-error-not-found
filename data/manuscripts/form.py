@@ -14,6 +14,13 @@ FORM_FLDS = [
     },
 ]
 
-
 def get_form() -> list:
     return FORM_FLDS
+
+
+def get_form_descr():
+    """
+    For Swagger!
+    """
+    return ff.get_form_descr(FORM_FLDS)
+
