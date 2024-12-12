@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="60f8a6c1-fcb4-402a-ad9d-5b7209efb385" name="Changes" comment="Minor Error Update" />
+    <list default="true" id="60f8a6c1-fcb4-402a-ad9d-5b7209efb385" name="Changes" comment="Minor Error Update">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -126,6 +128,7 @@
       <workItem from="1731443040291" duration="361000" />
       <workItem from="1732853784724" duration="8465000" />
       <workItem from="1733448483382" duration="2532000" />
+      <workItem from="1733973340950" duration="601000" />
     </task>
     <task id="LOCAL-00001" summary="Add update_person endpoint test">
       <option name="closed" value="true" />
