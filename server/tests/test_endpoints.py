@@ -332,21 +332,13 @@ def test_delete_text():
         json=text_data
     )
 
-    # Delete the text entry
-    resp = TEST_CLIENT.delete(
-        ep.TEXT_EP,
-        json={"key": "delete_test"}
-    )
-
+    # Delete the text entry using the path parameter
+    resp = TEST_CLIENT.delete(f"/text/{text_data['key']}")
     assert resp.status_code == OK
     assert resp.get_json()['message'] == 'Text deleted successfully'
 
     # Try to delete the text entry again to ensure it was deleted
-    resp = TEST_CLIENT.delete(
-        ep.TEXT_EP,
-        json={"key": "delete_test"}
-    )
-
+    resp = TEST_CLIENT.delete(f"/text/{text_data['key']}")
     assert resp.status_code == NOT_FOUND
     assert resp.get_json()['message'] == 'Text entry not found'
 

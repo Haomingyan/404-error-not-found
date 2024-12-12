@@ -49,7 +49,7 @@ def test_delete_text():
 
     # Delete the text and check it is removed
     delete_message = txt.delete_text(key_to_delete)
-    assert delete_message == f'Text with key "{key_to_delete}" has been deleted.'
+    assert delete_message == {"message": f"Text with key '{key_to_delete}' has been deleted."}
     assert key_to_delete not in txt.text_dict
 
 def test_delete_nonexistent_text():

@@ -208,23 +208,6 @@ class Texts(Resource):
         except Exception as e:
             return {'message': str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-    @api.response(HTTPStatus.OK, 'Text deleted successfully')
-    @api.response(HTTPStatus.NOT_FOUND, 'Text entry not found')
-    def delete(self):
-        """
-        Delete a text entry by key.
-        """
-        data = api.payload
-        key = data.get('key')
-        if not key:
-            return {'message': 'Key is required'}, HTTPStatus.BAD_REQUEST
-
-        try:
-            txt.delete_text(key)
-            return {'message': 'Text deleted successfully'}, HTTPStatus.OK
-        except ValueError:
-            return {'message': 'Text entry not found'}, HTTPStatus.NOT_FOUND
-
     @api.expect(api.model('Text', {
         'key': fields.String(required=True,
                              description='A unique identifier '
@@ -253,6 +236,21 @@ class Texts(Resource):
         except Exception as e:
             return ({'message': str(e)},
                     HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@api.route('/text/<string:key>')
+class TextEntry(Resource):
+    @api.response(HTTPStatus.OK, 'Text deleted successfully')
+    @api.response(HTTPStatus.NOT_FOUND, 'Text entry not found')
+    def delete(self, key):
+        """
+        Delete a text entry by key from the URL path parameter.
+        """
+        try:
+            txt.delete_text(key)
+            return {'message': 'Text deleted successfully'}, HTTPStatus.OK
+        except ValueError:
+            return {'message': 'Text entry not found'}, HTTPStatus.NOT_FOUND
 
 
 if __name__ == '__main__':

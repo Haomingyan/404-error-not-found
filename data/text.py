@@ -62,16 +62,16 @@ def update_text(key, title, text):  # test function added
     return text_dict[key]
 
 
-def delete_text(key):  # test function added
+def delete_text(key):
     """
-    Delete an existing text entry in text_dict.
-    - key: The unique identifier for the text to delete.
+    Delete an existing text entry from text_dict.
     """
+    global text_dict
     if key not in text_dict:
         raise ValueError(f'Text with key "{key}" does not exist.')
 
     del text_dict[key]
-    return f'Text with key "{key}" has been deleted.'
+    return {"message": f"Text with key '{key}' has been deleted."}
 
 
 def read_one(key: str) -> dict:
