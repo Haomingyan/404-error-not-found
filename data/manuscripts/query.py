@@ -1,16 +1,20 @@
+import data.manuscripts.fields as flds
 # states:
 AUTHOR_REV = 'AUR'
 COPY_EDIT = 'CED'
 IN_REF_REV = 'REV'
 REJECTED = 'REJ'
 SUBMITTED = 'SUB'
+WITHDRAW = 'WIT'
 TEST_STATE = SUBMITTED
 
 VALID_STATES = [
+    AUTHOR_REV,
     COPY_EDIT,
     IN_REF_REV,
     REJECTED,
     SUBMITTED,
+    WITHDRAW,
 ]
 
 
@@ -26,12 +30,15 @@ ACCEPT = 'ACC'
 ASSIGN_REF = 'ARF'
 DONE = 'DON'
 REJECT = 'REJ'
+WITHDRAW = 'WIT'
+TEST_ACTION = ACCEPT
 
 VALID_ACTIONS = [
     ACCEPT,
     ASSIGN_REF,
     DONE,
-    REJECT
+    REJECT,
+    WITHDRAW
 ]
 
 
@@ -42,6 +49,18 @@ def get_actions() -> list:
 def is_valid_action(action: str) -> bool:
     return action in VALID_ACTIONS
 
+def assign_ref(manu:dict, ref:str, extra=None)-> str:
+    print(extra)
+    manu[flds.REFEREES].append(ref)
+    return IN_REF_REV
+
+def delete_ref(manu:dict, ref:str)-> str:
+    if len(manu[flds.REFEREES]) > 0:
+        manu[flds.REFEREES].remove(ref)
+    if len(manu[flds.REFEREES]) > 0:
+        return IN_REF_REV
+    else:
+        return SUBMITTED
 
 FUNC = 'f'
 
