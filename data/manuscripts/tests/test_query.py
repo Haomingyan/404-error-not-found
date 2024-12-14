@@ -32,3 +32,10 @@ def test_handle_action_bad_state():
         mqry.handle_action(gen_random_not_valid_str(),
                            mqry.TEST_ACTION,
                            manu=mqry.SAMPLE_MANU)
+
+
+def test_handle_action_bad_action():
+    with pytest.raises(ValueError):
+        mqry.handle_action(mqry.TEST_STATE,
+                           gen_random_not_valid_str(),
+                           manu=mqry.SAMPLE_MANU)
