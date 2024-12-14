@@ -1,7 +1,5 @@
 import data.manuscripts.query as mqry
-
 import random
-
 import pytest
 
 
