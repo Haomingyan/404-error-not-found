@@ -2,6 +2,8 @@ import data.manuscripts.query as mqry
 
 import random
 
+import pytest
+
 
 def gen_random_not_valid_str()-> str:
     BIG_NUM = 10_000_000_000
@@ -23,3 +25,10 @@ def test_is_not_valid_state():
 def test_is_valid_action():
     for action in mqry.get_actions():
         assert mqry.is_valid_action(action)
+
+
+def test_handle_action_bad_state():
+    with pytest.raises(ValueError):
+        mqry.handle_action(gen_random_not_valid_str(),
+                           mqry.TEST_ACTION,
+                           manu=mqry.SAMPLE_MANU)
