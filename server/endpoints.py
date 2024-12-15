@@ -240,7 +240,7 @@ class Texts(Resource):
                     HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
-@api.route('/text/<string:key>')
+@api.route(f'{TEXT_EP}/<string:key>')
 class TextEntry(Resource):
     @api.response(HTTPStatus.OK, 'Text deleted successfully')
     @api.response(HTTPStatus.NOT_FOUND, 'Text entry not found')
@@ -377,11 +377,8 @@ class ManuscriptDelete(Resource):
         }, HTTPStatus.OK
 
 
-@api.route('/manuscripts/update')
+@api.route(f'/{MANUSCRIPT_EP}/update')
 class ManuscriptUpdate(Resource):
-    """
-    This class handles updating an existing manuscript.
-    """
     @api.expect(manuscript_model)
     @api.response(HTTPStatus.OK, 'Manuscript updated successfully.')
     @api.response(HTTPStatus.NOT_FOUND, 'Manuscript not found.')
@@ -405,22 +402,26 @@ class ManuscriptUpdate(Resource):
                 RETURN: None,
             }, HTTPStatus.NOT_FOUND
 
+        updates = {
+            mt.AUTHOR: author,
+            mt.AUTHOR_EMAIL: author_email,
+            mt.TEXT: text,
+            mt.ABSTRACT: abstract,
+            mt.EDITOR_EMAIL: editor_email,
+        }
+
         try:
-            updated_title = mt.update(title, author, author_email,
-                                      text, abstract, editor_email)
+            updated_manuscript = mt.update(title, updates)
             return {
                 MESSAGE: "Manuscript updated successfully.",
-                RETURN: updated_title,
+                RETURN: updated_manuscript[mt.TITLE],
             }, HTTPStatus.OK
         except ValueError as ve:
-            # This handles the case if `mt.update`
-            # raises ValueError for invalid manuscript
             return {
                 MESSAGE: str(ve),
                 RETURN: None,
             }, HTTPStatus.NOT_FOUND
         except Exception as e:
-            # Handle any other unexpected errors
             return {
                 MESSAGE: f"Error updating manuscript '{title}': {str(e)}",
                 RETURN: None,
