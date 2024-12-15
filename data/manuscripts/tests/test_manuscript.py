@@ -41,16 +41,14 @@ def test_read_one():
     assert manuscript['title'] == TEST_TITLE
     mt.delete(TEST_TITLE)
 
-@pytest.mark.skip(reason="Delete not implemented yet")
 def test_update():
-    # Ensure the manuscript does not exist initially
-    # if mt.exists(TEST_TITLE):
-    #     mt.delete(TEST_TITLE)
+    # If the manuscript exists from a previous run, delete it
+    if mt.exists(TEST_TITLE):
+        mt.delete(TEST_TITLE)
 
     # Create a new manuscript
     mt.create(TEST_TITLE, TEST_AUTHOR, TEST_AUTHOR_EMAIL,
               TEST_TEXT, TEST_ABSTRACT, TEST_EDITOR_EMAIL)
-    # Verify creation
     assert mt.exists(TEST_TITLE)
 
     # Define updates
@@ -74,7 +72,9 @@ def test_update():
     assert manuscript_after_update['author'] == new_author
     assert manuscript_after_update['abstract'] == new_abstract
 
-    #mt.delete(TEST_TITLE)
+    # Cleanup: delete the manuscript after test completes
+    mt.delete(TEST_TITLE)
+
 
 def test_delete():
     if mt.exists(TEST_TITLE):

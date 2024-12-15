@@ -82,9 +82,11 @@ def update(title: str, updates: dict) -> dict:
         raise ValueError(f'Invalid author email: {updates[AUTHOR_EMAIL]}')
     if EDITOR_EMAIL in updates and not ppl.is_valid_email(updates[EDITOR_EMAIL]):
         raise ValueError(f'Invalid editor email: {updates[EDITOR_EMAIL]}')
-    set_updates = {"$set": updates}
-    dbc.update(MANUSCRIPTS_COLLECT, {TITLE: title}, set_updates)
+
+    dbc.update_doc(MANUSCRIPTS_COLLECT, {TITLE: title}, updates)
+
     return read_one(title)
+
 
 def delete(title: str) -> bool:
     if not title.strip():
