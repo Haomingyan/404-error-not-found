@@ -10,6 +10,7 @@ from http.client import (
 
 from unittest.mock import patch
 from data.people import NAME
+import data.manuscripts.manuscript as mt
 
 import pytest
 import json
@@ -381,9 +382,20 @@ def test_endpoints(test_client):
     """
     Test the /endpoints endpoint to ensure it returns all available endpoints.
     """
-    response = test_client.get(ep.ENDPOINT_EP)
+    response = test_client.post(ep.ENDPOINT_EP)
     assert response.status_code == 200
     resp_json = response.get_json()
     assert "Available endpoints" in resp_json
     assert isinstance(resp_json["Available endpoints"], list)
     assert len(resp_json["Available endpoints"]) > 0
+
+TEST_TITLE = "Test Title"
+TEST_EMAIL = "test@nyu.edu"
+MANUSCRIPT_DATA = {
+    mt.TITLE: "Test Manuscript",
+    mt.AUTHOR: "Test Author",
+    mt.AUTHOR_EMAIL: TEST_EMAIL,
+    mt.TEXT: "Test Text",
+    mt.ABSTRACT: "Test Abstract",
+    mt.EDITOR_EMAIL: TEST_EMAIL
+}
