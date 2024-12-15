@@ -255,11 +255,10 @@ class TextEntry(Resource):
             return {'message': 'Text entry not found'}, HTTPStatus.NOT_FOUND
 
 
-@api.route(f'{MANUSCRIPT_EP}/create')
+@api.route(f'{MANUSCRIPT_EP}/read')
 class Manuscripts(Resource):
     """
-    This class handles creating, reading, updating
-    and deleting manuscripts.
+    This class handles reading manuscripts.
     """
     def get(self):
         """
