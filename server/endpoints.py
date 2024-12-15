@@ -255,7 +255,7 @@ class TextEntry(Resource):
             return {'message': 'Text entry not found'}, HTTPStatus.NOT_FOUND
 
 
-@api.route(MANUSCRIPT_EP)
+@api.route(f'{MANUSCRIPT_EP}/create')
 class Manuscripts(Resource):
     """
     This class handles creating, reading, updating
