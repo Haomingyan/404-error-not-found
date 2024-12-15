@@ -292,7 +292,7 @@ manuscript_model = api.model('Manuscript', {
 })
 
 
-@api.route('/manuscripts/create')
+@api.route(f'{MANUSCRIPT_EP}/create')
 class ManuscriptCreate(Resource):
     """
     This class handles creating a new manuscript.

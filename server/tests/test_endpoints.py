@@ -407,7 +407,7 @@ def test_delete_manuscript():
 
     # Create the manuscript
     resp_create = TEST_CLIENT.post(
-        '/manuscripts/create',
+        f'{MANUSCRIPT_EP}/create',
         json=MANUSCRIPT_DATA
     )
     assert resp_create.status_code == OK, f"Creation failed: {resp_create.get_json()}"
@@ -425,6 +425,8 @@ def test_delete_manuscript():
     assert resp_delete_again.status_code == NOT_FOUND
     delete_again_json = resp_delete_again.get_json()
     assert 'does not exist' in delete_again_json['Message']
+
+MANUSCRIPT_EP = '/manuscript'
 
 def test_create_manuscript():
     if mt.exists(MANUSCRIPT_DATA[mt.TITLE]):
@@ -444,7 +446,7 @@ def test_create_manuscript():
         }
     }
 
-    resp = TEST_CLIENT.post('/manuscripts/create', json=manuscript_data)
+    resp = TEST_CLIENT.post(f'{MANUSCRIPT_EP}/create', json=manuscript_data)
     assert resp.status_code == HTTPStatus.OK
     response_data = resp.get_json()
     assert response_data['Message'] == 'Manuscript added!'
