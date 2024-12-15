@@ -316,9 +316,9 @@ class ManuscriptCreate(Resource):
             ret = mt.create(title, author,
                             author_email, text,
                             abstract, editor_email)
-        except Exception:
+        except Exception as e:
             return {
-                MESSAGE: f'Could not add manuscript: {str()}',
+                MESSAGE: f'Could not add manuscript: {str(e)}',
                 RETURN: None,
             }, HTTPStatus.CONFLICT
 
@@ -375,6 +375,56 @@ class ManuscriptDelete(Resource):
             MESSAGE: "Manuscript deleted successfully!",
             RETURN: title,
         }, HTTPStatus.OK
+
+
+@api.route('/manuscripts/update')
+class ManuscriptUpdate(Resource):
+    """
+    This class handles updating an existing manuscript.
+    """
+    @api.expect(manuscript_model)
+    @api.response(HTTPStatus.OK, 'Manuscript updated successfully.')
+    @api.response(HTTPStatus.NOT_FOUND, 'Manuscript not found.')
+    @api.response(HTTPStatus.CONFLICT, 'Error updating the manuscript.')
+    def put(self):
+        """
+        Update an existing manuscript.
+        """
+        data = request.json
+        title = data.get('title')
+        author = data.get('author')
+        author_email = data.get('author_email')
+        text = data.get('text')
+        abstract = data.get('abstract')
+        editor_email = data.get('editor_email')
+
+        # Check if the manuscript exists before attempting update
+        if not mt.exists(title):
+            return {
+                MESSAGE: f"Manuscript '{title}' does not exist.",
+                RETURN: None,
+            }, HTTPStatus.NOT_FOUND
+
+        try:
+            updated_title = mt.update(title, author, author_email,
+                                      text, abstract, editor_email)
+            return {
+                MESSAGE: "Manuscript updated successfully.",
+                RETURN: updated_title,
+            }, HTTPStatus.OK
+        except ValueError as ve:
+            # This handles the case if `mt.update`
+            # raises ValueError for invalid manuscript
+            return {
+                MESSAGE: str(ve),
+                RETURN: None,
+            }, HTTPStatus.NOT_FOUND
+        except Exception as e:
+            # Handle any other unexpected errors
+            return {
+                MESSAGE: f"Error updating manuscript '{title}': {str(e)}",
+                RETURN: None,
+            }, HTTPStatus.CONFLICT
 
 
 if __name__ == '__main__':

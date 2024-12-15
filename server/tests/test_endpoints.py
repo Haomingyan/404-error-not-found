@@ -19,6 +19,12 @@ import server.endpoints as ep
 
 TEST_CLIENT = ep.app.test_client()
 
+TEST_TITLE = "Test Manuscript"
+TEST_AUTHOR = "Test Author"
+TEST_AUTHOR_EMAIL = "test_author@example.com"
+TEST_TEXT = "Original Text"
+TEST_ABSTRACT = "Original Abstract"
+TEST_EDITOR_EMAIL = "editor@example.com"
 
 @patch("server.endpoints.HELLO_RESP", "Hello, patched response!")
 def test_hello_with_patch():
@@ -475,4 +481,44 @@ def test_create_manuscript():
     assert response_data['Message'] == 'Manuscript added!'
     assert response_data['return'] == manuscript_data['title']
 
+@pytest.fixture
+def create_test_manuscript():
+    # Ensure manuscript does not exist
+    if mt.exists(TEST_TITLE):
+        mt.delete(TEST_TITLE)
+    # Create a fresh manuscript for testing
+    mt.create(TEST_TITLE, TEST_AUTHOR, TEST_AUTHOR_EMAIL,
+              TEST_TEXT, TEST_ABSTRACT, TEST_EDITOR_EMAIL)
+    yield
+    # Cleanup after test
+    if mt.exists(TEST_TITLE):
+        mt.delete(TEST_TITLE)
 
+def test_update_manuscript(create_test_manuscript):
+    # Verify that the manuscript was created
+    manuscript = mt.read_one(TEST_TITLE)
+    assert manuscript is not None
+    assert manuscript[mt.TITLE] == TEST_TITLE
+    assert manuscript[mt.AUTHOR] == TEST_AUTHOR
+    assert manuscript[mt.AUTHOR_EMAIL] == TEST_AUTHOR_EMAIL
+    assert manuscript[mt.TEXT] == TEST_TEXT
+    assert manuscript[mt.ABSTRACT] == TEST_ABSTRACT
+    assert manuscript[mt.EDITOR_EMAIL] == TEST_EDITOR_EMAIL
+
+    # Prepare updated data as a dict
+    updates = {
+        mt.AUTHOR: "Updated Author",
+        mt.AUTHOR_EMAIL: "updated_author@example.com",
+        mt.TEXT: "Updated Text of the manuscript.",
+        mt.ABSTRACT: "Updated Abstract",
+        mt.EDITOR_EMAIL: "updated_editor@example.com"
+    }
+
+    # Perform the update
+    updated_manuscript = mt.update(TEST_TITLE, updates)
+    assert updated_manuscript is not None
+    assert updated_manuscript[mt.AUTHOR] == "Updated Author"
+    assert updated_manuscript[mt.AUTHOR_EMAIL] == "updated_author@example.com"
+    assert updated_manuscript[mt.TEXT] == "Updated Text of the manuscript."
+    assert updated_manuscript[mt.ABSTRACT] == "Updated Abstract"
+    assert updated_manuscript[mt.EDITOR_EMAIL] == "updated_editor@example.com"
