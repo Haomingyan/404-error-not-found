@@ -12,6 +12,7 @@ from http import HTTPStatus
 import werkzeug.exceptions as wz
 import data.people as ppl
 import data.text as txt
+import data.manuscripts.manuscript as mt
 # from data.people import people_dict
 
 # import werkzeug.exceptions as wz
@@ -31,6 +32,7 @@ PEOPLE_EP = '/people'
 TEXT_EP = '/text'
 MESSAGE = 'Message'
 RETURN = 'return'
+MANUSCRIPT_EP = '/manuscript'
 
 person_model = api.model('Person', {
     'name': fields.String(required=True, description='The person\'s name'),
@@ -251,6 +253,80 @@ class TextEntry(Resource):
             return {'message': 'Text deleted successfully'}, HTTPStatus.OK
         except ValueError:
             return {'message': 'Text entry not found'}, HTTPStatus.NOT_FOUND
+
+
+@api.route(MANUSCRIPT_EP)
+class Manuscripts(Resource):
+    """
+    This class handles creating, reading, updating
+    and deleting manuscripts.
+    """
+    def get(self):
+        """
+        Retrieve all manuscripts.
+        """
+        return mt.read()
+
+
+manuscript_model = api.model('Manuscript', {
+    'title': fields.String(required=True,
+                           description='Title of the manuscript'),
+    'author': fields.String(required=True,
+                            description='Author name'),
+    'author_email': fields.String(required=True,
+                                  description='Author email'),
+    'text': fields.String(required=True,
+                          description='The body of the manuscript'),
+    'abstract': fields.String(required=True,
+                              description='A summary of the manuscript'),
+    'editor_email': fields.String(required=True,
+                                  description='Editor email'),
+    'referees': fields.Raw(required=False,
+                           description='Dictionary of referees',
+                           example={
+                               "referee_email@example.com": {
+                                   "report": "Good paper",
+                                   "verdict": "ACCEPT"
+                               }
+                           }),
+})
+
+
+@api.route('/manuscripts/create')
+class ManuscriptCreate(Resource):
+    """
+    This class handles creating a new manuscript.
+    """
+    @api.expect(manuscript_model)
+    @api.response(HTTPStatus.OK, 'Success.')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Not acceptable.')
+    def post(self):
+        """
+        Create a new manuscript.
+        """
+        try:
+            data = request.json
+
+            title = data.get('title')
+            author = data.get('author')
+            author_email = data.get('author_email')
+            text = data.get('text')
+            abstract = data.get('abstract')
+            editor_email = data.get('editor_email')
+
+            ret = mt.create(title, author,
+                            author_email, text,
+                            abstract, editor_email)
+        except Exception:
+            return {
+                MESSAGE: f'Could not add manuscript: {str()}',
+                RETURN: None,
+            }, HTTPStatus.CONFLICT
+
+        return {
+            MESSAGE: 'Manuscript added!',
+            RETURN: ret,
+        }, HTTPStatus.OK
 
 
 if __name__ == '__main__':
