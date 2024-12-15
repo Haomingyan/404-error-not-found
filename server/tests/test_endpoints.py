@@ -401,32 +401,55 @@ MANUSCRIPT_DATA = {
 }
 
 def test_delete_manuscript():
-    # Ensure the manuscript does not exist before the test
-    if mt.exists(MANUSCRIPT_DATA[mt.TITLE]):
-        mt.delete(MANUSCRIPT_DATA[mt.TITLE])
+    title = "Test Manuscript Delete"
+    author = "John Doe"
+    author_email = "john.doe@example.com"
+    text = "This is the body of the test manuscript to delete."
+    abstract = "A brief summary of the test manuscript for deletion."
+    editor_email = "editor@example.com"
+
+    manuscript_data = {
+        "title": title,
+        "author": author,
+        "author_email": author_email,
+        "text": text,
+        "abstract": abstract,
+        "editor_email": editor_email,
+        "referees": {
+            "referee_email@example.com": {
+                "report": "Good paper",
+                "verdict": "ACCEPT"
+            }
+        }
+    }
+
+    if mt.exists(title):
+        mt.delete(title)
 
     # Create the manuscript
-    resp_create = TEST_CLIENT.post(
-        f'{MANUSCRIPT_EP}/create',
-        json=MANUSCRIPT_DATA
-    )
-    assert resp_create.status_code == OK, f"Creation failed: {resp_create.get_json()}"
-    create_json = resp_create.get_json()
-    assert create_json['Message'] == 'Manuscript added!'
+    resp_create = TEST_CLIENT.post(f'{MANUSCRIPT_EP}/create', json=manuscript_data)
+    assert resp_create.status_code == HTTPStatus.OK, f"Creation failed: {resp_create.get_json()}"
+    response_create_data = resp_create.get_json()
+    assert response_create_data['Message'] == 'Manuscript added!'
+    assert response_create_data['return'] == title
 
     # Delete the manuscript
-    resp_delete = TEST_CLIENT.delete(f"/manuscripts/delete/{MANUSCRIPT_DATA[mt.TITLE]}")
-    assert resp_delete.status_code == OK
-    delete_json = resp_delete.get_json()
-    assert 'deleted successfully' in delete_json['Message']
+    resp_delete = TEST_CLIENT.delete(f'{MANUSCRIPT_EP}/delete', json={"title": title})
+    assert resp_delete.status_code == HTTPStatus.OK, f"Delete failed: {resp_delete.get_json()}"
+    response_delete_data = resp_delete.get_json()
+    assert 'deleted successfully' in response_delete_data['Message']
+    assert response_delete_data['return'] == title
 
-    # Attempt to delete the manuscript again to confirm it was removed
-    resp_delete_again = TEST_CLIENT.delete(f"/manuscripts/delete/{MANUSCRIPT_DATA[mt.TITLE]}")
-    assert resp_delete_again.status_code == NOT_FOUND
-    delete_again_json = resp_delete_again.get_json()
-    assert 'does not exist' in delete_again_json['Message']
+    # Attempt to delete the manuscript again to ensure it was removed
+    resp_delete_again = TEST_CLIENT.delete(f'{MANUSCRIPT_EP}/delete', json={"title": title})
+    assert resp_delete_again.status_code == HTTPStatus.NOT_FOUND, f"Should not find manuscript: {resp_delete_again.get_json()}"
+    response_delete_again_data = resp_delete_again.get_json()
+    assert 'does not exist' in response_delete_again_data['Message']
+
+
 
 MANUSCRIPT_EP = '/manuscript'
+
 
 def test_create_manuscript():
     if mt.exists(MANUSCRIPT_DATA[mt.TITLE]):
