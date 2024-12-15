@@ -377,7 +377,7 @@ class ManuscriptDelete(Resource):
         }, HTTPStatus.OK
 
 
-@api.route(f'/{MANUSCRIPT_EP}/update')
+@api.route(f'{MANUSCRIPT_EP}/update')
 class ManuscriptUpdate(Resource):
     @api.expect(manuscript_model)
     @api.response(HTTPStatus.OK, 'Manuscript updated successfully.')
