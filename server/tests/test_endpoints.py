@@ -426,3 +426,28 @@ def test_delete_manuscript():
     delete_again_json = resp_delete_again.get_json()
     assert 'does not exist' in delete_again_json['Message']
 
+def test_create_manuscript():
+    if mt.exists(MANUSCRIPT_DATA[mt.TITLE]):
+        mt.delete(MANUSCRIPT_DATA[mt.TITLE])
+    manuscript_data = {
+        "title": "Test Manuscript",
+        "author": "John Doe",
+        "author_email": "john.doe@example.com",
+        "text": "This is the body of the test manuscript.",
+        "abstract": "A brief summary of the test manuscript.",
+        "editor_email": "editor@example.com",
+        "referees": {
+            "referee_email@example.com": {
+                "report": "Good paper",
+                "verdict": "ACCEPT"
+            }
+        }
+    }
+
+    resp = TEST_CLIENT.post('/manuscripts/create', json=manuscript_data)
+    assert resp.status_code == HTTPStatus.OK
+    response_data = resp.get_json()
+    assert response_data['Message'] == 'Manuscript added!'
+    assert response_data['return'] == manuscript_data['title']
+
+

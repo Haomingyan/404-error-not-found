@@ -10,6 +10,8 @@ TEST_ABSTRACT = "Test Abstract"
 TEST_EDITOR_EMAIL = "testEditor@gmail.com"
 
 def test_create():
+    if mt.exists(TEST_TITLE):
+        mt.delete(TEST_TITLE)
     assert not mt.exists(TEST_TITLE)
     mt.create(TEST_TITLE, TEST_AUTHOR, TEST_AUTHOR_EMAIL,
               TEST_TEXT, TEST_ABSTRACT, TEST_EDITOR_EMAIL)
