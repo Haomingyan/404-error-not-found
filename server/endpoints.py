@@ -344,6 +344,9 @@ class ManuscriptDelete(Resource):
     @api.response(HTTPStatus.NOT_FOUND, 'Manuscript not found.')
     @api.response(HTTPStatus.CONFLICT, 'Conflict occurred while deleting.')
     def delete(self):
+        """
+        Delete a manuscript.
+        """
         data = request.get_json(force=True)
         title = data.get('title', '').strip()
 
