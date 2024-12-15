@@ -329,5 +329,33 @@ class ManuscriptCreate(Resource):
         }, HTTPStatus.OK
 
 
+@api.route('/manuscripts/delete/<string:title>')
+class ManuscriptDelete(Resource):
+    """
+    This class handles deleting a manuscript by title.
+    """
+    @api.response(HTTPStatus.OK, 'Manuscript deleted successfully.')
+    @api.response(HTTPStatus.NOT_FOUND, 'Manuscript not found.')
+    def delete(self, title):
+        try:
+            if not mt.exists(title):
+                return {
+                    MESSAGE: f"Manuscript '{title}' does not exist.",
+                    RETURN: None,
+                }, HTTPStatus.NOT_FOUND
+
+            mt.delete(title)
+            return {
+                MESSAGE: f"Manuscript '{title}' deleted successfully.",
+                RETURN: title,
+            }, HTTPStatus.OK
+
+        except Exception as e:
+            return {
+                MESSAGE: f"Error deleting manuscript '{title}': {str(e)}",
+                RETURN: None,
+            }, HTTPStatus.CONFLICT
+
+
 if __name__ == '__main__':
     app.run(debug=True)

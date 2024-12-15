@@ -399,3 +399,30 @@ MANUSCRIPT_DATA = {
     mt.ABSTRACT: "Test Abstract",
     mt.EDITOR_EMAIL: TEST_EMAIL
 }
+
+def test_delete_manuscript():
+    # Ensure the manuscript does not exist before the test
+    if mt.exists(MANUSCRIPT_DATA[mt.TITLE]):
+        mt.delete(MANUSCRIPT_DATA[mt.TITLE])
+
+    # Create the manuscript
+    resp_create = TEST_CLIENT.post(
+        '/manuscripts/create',
+        json=MANUSCRIPT_DATA
+    )
+    assert resp_create.status_code == OK, f"Creation failed: {resp_create.get_json()}"
+    create_json = resp_create.get_json()
+    assert create_json['Message'] == 'Manuscript added!'
+
+    # Delete the manuscript
+    resp_delete = TEST_CLIENT.delete(f"/manuscripts/delete/{MANUSCRIPT_DATA[mt.TITLE]}")
+    assert resp_delete.status_code == OK
+    delete_json = resp_delete.get_json()
+    assert 'deleted successfully' in delete_json['Message']
+
+    # Attempt to delete the manuscript again to confirm it was removed
+    resp_delete_again = TEST_CLIENT.delete(f"/manuscripts/delete/{MANUSCRIPT_DATA[mt.TITLE]}")
+    assert resp_delete_again.status_code == NOT_FOUND
+    delete_again_json = resp_delete_again.get_json()
+    assert 'does not exist' in delete_again_json['Message']
+
