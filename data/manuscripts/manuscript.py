@@ -69,3 +69,29 @@ def create(title: str, author: str, author_email: str,
         }
         dbc.create(MANUSCRIPTS_COLLECT, manuscript)
         return title
+
+def update(title: str, updates: dict) -> dict:
+    if not title.strip():
+        raise ValueError("Title cannot be blank")
+    manuscript = read_one(title)
+    if not manuscript:
+        raise ValueError(f"Manuscript with title '{title}' does not exist.")
+    if TITLE in updates:
+        del updates[TITLE]
+    if AUTHOR_EMAIL in updates and not ppl.is_valid_email(updates[AUTHOR_EMAIL]):
+        raise ValueError(f'Invalid author email: {updates[AUTHOR_EMAIL]}')
+    if EDITOR_EMAIL in updates and not ppl.is_valid_email(updates[EDITOR_EMAIL]):
+        raise ValueError(f'Invalid editor email: {updates[EDITOR_EMAIL]}')
+    set_updates = {"$set": updates}
+    dbc.update(MANUSCRIPTS_COLLECT, {TITLE: title}, set_updates)
+    return read_one(title)
+
+def delete(title: str) -> bool:
+    if not title.strip():
+        raise ValueError("Title cannot be blank")
+    manuscript = read_one(title)
+    if not manuscript:
+        raise ValueError(f"Manuscript with title '{title}' does not exist.")
+
+    dbc.delete(MANUSCRIPTS_COLLECT, {TITLE: title})
+    return True
