@@ -522,3 +522,15 @@ def test_update_manuscript(create_test_manuscript):
     assert updated_manuscript[mt.TEXT] == "Updated Text of the manuscript."
     assert updated_manuscript[mt.ABSTRACT] == "Updated Abstract"
     assert updated_manuscript[mt.EDITOR_EMAIL] == "updated_editor@example.com"
+
+@patch('data.manuscripts.manuscript.read', autospec=True,
+       return_value={'title': {mt.TITLE: 'Test Title'}})
+def test_read_manuscripts(mock_read):
+    resp = TEST_CLIENT.get(f'{MANUSCRIPT_EP}/read')
+    assert resp.status_code == OK
+    resp_json = resp.get_json()
+    assert isinstance(resp_json, dict)
+    for title, manu in resp_json.items():
+        assert isinstance(title, str)
+        assert len(title) > 0
+        assert mt.TITLE in manu
