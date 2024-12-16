@@ -240,14 +240,13 @@ class Texts(Resource):
                     HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
-@api.route(f'{TEXT_EP}/<string:key>')
+@api.route(f'{TEXT_EP}/delete')
 class TextEntry(Resource):
     @api.response(HTTPStatus.OK, 'Text deleted successfully')
     @api.response(HTTPStatus.NOT_FOUND, 'Text entry not found')
-    def delete(self, key):
-        """
-        Delete a text entry by key from the URL path parameter.
-        """
+    def delete(self):
+        data = request.get_json()
+        key = data.get('key')
         try:
             txt.delete_text(key)
             return {'message': 'Text deleted successfully'}, HTTPStatus.OK

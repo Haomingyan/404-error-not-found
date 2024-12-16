@@ -334,21 +334,29 @@ def test_delete_text():
     }
 
     # Create the text entry to be deleted
-    TEST_CLIENT.post(
+    create_resp = TEST_CLIENT.post(
         ep.TEXT_EP,
         json=text_data
     )
+    assert create_resp.status_code == 201  # or 200 depending on your endpoint's response
+    create_resp_json = create_resp.get_json()
+    assert 'message' in create_resp_json, "Creation should return a message"
 
-    # Delete the text entry using the path parameter
-    resp = TEST_CLIENT.delete(f"/text/{text_data['key']}")
-    assert resp.status_code == OK
-    assert resp.get_json()['message'] == 'Text deleted successfully'
+    # Delete the text entry by sending the key in the JSON body
+    delete_resp = TEST_CLIENT.delete(
+        f"/text/delete",
+        json={"key": text_data["key"]}
+    )
+    assert delete_resp.status_code == OK
+    assert delete_resp.get_json()['message'] == 'Text deleted successfully'
 
     # Try to delete the text entry again to ensure it was deleted
-    resp = TEST_CLIENT.delete(f"/text/{text_data['key']}")
-    assert resp.status_code == NOT_FOUND
-    assert resp.get_json()['message'] == 'Text entry not found'
-
+    delete_again_resp = TEST_CLIENT.delete(
+        f"/text/delete",
+        json={"key": text_data["key"]}
+    )
+    assert delete_again_resp.status_code == NOT_FOUND
+    assert delete_again_resp.get_json()['message'] == 'Text entry not found'
 
 def test_update_text():
     # Initial text data
