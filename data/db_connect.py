@@ -38,7 +38,6 @@ def connect_db():
                 f'404-error-not-found:{password}'
                 '@cluster0.cmb6h.mongodb.net/'
                 '?retryWrites=true&w=majority&appName=Cluster0',
-                socketKeepAlive=True
             )
         else:
             print("Connecting to Mongo locally.")
