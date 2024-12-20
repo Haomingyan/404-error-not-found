@@ -2,10 +2,10 @@
 # This shell script deploys a new version to a server.
 
 # PROJ_DIR=404-error-not-found
-PROJ_DIR=demo-repo4
-VENV=Fall2023
-PA_DOMAIN="Fall2023.pythonanywhere.com"
-PA_USER='Fall2023'
+PROJ_DIR=404-error-not-found
+VENV=""
+PA_DOMAIN="Brianwu.pythonanywhere.com "
+PA_USER='Brianwu'
 echo "Project dir = $PROJ_DIR"
 echo "PA domain = $PA_DOMAIN"
 echo "Virtual env = $VENV"
