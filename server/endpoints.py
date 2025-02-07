@@ -13,9 +13,8 @@ import werkzeug.exceptions as wz
 import data.people as ppl
 import data.text as txt
 import data.manuscripts.manuscript as mt
-# from data.people import people_dict
-
-# import werkzeug.exceptions as wz
+import data.manuscripts.query as qy
+import werkzeug.exceptions as wz
 
 app = Flask(__name__)
 CORS(app)
@@ -426,6 +425,55 @@ class ManuscriptUpdate(Resource):
                 RETURN: None,
             }, HTTPStatus.CONFLICT
 
+MANU_ACTION_FLDS = api.model('ManuscriptAction', {
+                mt.TITLE: fields.String(required=True, description='Manuscript Title'),
+                mt.STATE: fields.String(required=True, description='Current Manuscript State'),
+                mt.ACTION: fields.String(required=True, description='Action to be performed'),
+                mt.REFEREES: fields.String(description='Referee involved (if any)'),
+            })
+
+@api.route(f'{MANUSCRIPT_EP}/receive_action')
+class ReceiveAction(Resource):
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Invalid action or state')
+    @api.expect(MANU_ACTION_FLDS)
+    def put(self):
+        try:
+            title = request.json.get(mt.TITLE)
+            curr_state = request.json.get(mt.STATE)
+            action = request.json.get(mt.ACTION)
+            kwargs = {}
+
+            manuscript = mt.read_one(title)
+            if not manuscript:
+                return {"message": f'Manuscript with title "{title}" does not exist.'}, HTTPStatus.NOT_FOUND
+
+            kwargs["manu"] = manuscript
+
+            if mt.REFEREES in request.json:
+                kwargs["ref"] = request.json.get(mt.REFEREES)
+
+            new_state = qy.handle_action(curr_state, action, **kwargs)
+
+            updates = {mt.STATE: new_state}
+            mt.update(title, updates)
+
+            return {
+                'message': 'Action processed successfully!',
+                'new_state': new_state,
+            }, HTTPStatus.OK
+        except Exception as err:
+            return {'message': f'Bad action: {err}'}, HTTPStatus.NOT_ACCEPTABLE
+
 
 if __name__ == '__main__':
     app.run(debug=True)
+    if not mt.exists("test"):
+        mt.create(
+            "test",
+            "Author Name",
+            "author@example.com",
+            "Text content",
+            "Abstract content",
+            "editor@example.com"
+        )

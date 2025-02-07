@@ -13,6 +13,7 @@ ABSTRACT = 'abstract'
 HISTORY = 'history'
 EDITOR_EMAIL = 'editor_email'
 MANUSCRIPTS_COLLECT = 'manuscripts'
+ACTION = 'action'
 def read() -> dict:
     """
     return all the manuscripts
