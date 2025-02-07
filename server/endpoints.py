@@ -14,7 +14,6 @@ import data.people as ppl
 import data.text as txt
 import data.manuscripts.manuscript as mt
 import data.manuscripts.query as qy
-import werkzeug.exceptions as wz
 
 app = Flask(__name__)
 CORS(app)
@@ -425,12 +424,25 @@ class ManuscriptUpdate(Resource):
                 RETURN: None,
             }, HTTPStatus.CONFLICT
 
-MANU_ACTION_FLDS = api.model('ManuscriptAction', {
-                mt.TITLE: fields.String(required=True, description='Manuscript Title'),
-                mt.STATE: fields.String(required=True, description='Current Manuscript State'),
-                mt.ACTION: fields.String(required=True, description='Action to be performed'),
-                mt.REFEREES: fields.String(description='Referee involved (if any)'),
-            })
+
+MANU_ACTION_FLDS = api.model(
+    "ManuscriptAction",
+    {
+        mt.TITLE: fields.String(
+            required=True, description="Manuscript Title"
+        ),
+        mt.STATE: fields.String(
+            required=True, description="Current Manuscript State"
+        ),
+        mt.ACTION: fields.String(
+            required=True, description="Action to be performed"
+        ),
+        mt.REFEREES: fields.String(
+            description="Referee involved (if any)"
+        ),
+    },
+)
+
 
 @api.route(f'{MANUSCRIPT_EP}/receive_action')
 class ReceiveAction(Resource):
@@ -446,7 +458,11 @@ class ReceiveAction(Resource):
 
             manuscript = mt.read_one(title)
             if not manuscript:
-                return {"message": f'Manuscript with title "{title}" does not exist.'}, HTTPStatus.NOT_FOUND
+                return {
+                    "message": (
+                        f'Manuscript with title "{title}" does not exist.'
+                    )
+                }, HTTPStatus.NOT_FOUND
 
             kwargs["manu"] = manuscript
 
