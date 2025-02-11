@@ -44,3 +44,10 @@ def needs_recs(fn):
             security_recs = read()
         return fn(*args, **kwargs)
     return wrapper
+
+@needs_recs
+def read_feature(feature_name: str) -> dict:
+    if feature_name in security_recs:
+        return security_recs[feature_name]
+    else:
+        return None
