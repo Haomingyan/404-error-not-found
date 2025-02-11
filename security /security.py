@@ -33,3 +33,14 @@ def read() -> dict:
     return security_recs
 
 
+def needs_recs(fn):
+    """
+    Should be used to decorate any function that directly accesses sec recs.
+    """
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        global security_recs
+        if not security_recs:
+            security_recs = read()
+        return fn(*args, **kwargs)
+    return wrapper
