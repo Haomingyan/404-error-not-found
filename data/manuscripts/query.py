@@ -1,11 +1,15 @@
 import data.manuscripts.fields as flds
 # states:
 AUTHOR_REV = 'AUR'
+AUTHOR_REVISION = 'ARE'
+EDITOR_REV = 'EDR'
 COPY_EDIT = 'CED'
 IN_REF_REV = 'REV'
 REJECTED = 'REJ'
 SUBMITTED = 'SUB'
 WITHDRAWN = 'WIT'
+PUBLISHED = 'PUB'
+FORMATTING = 'FOR'
 TEST_STATE = SUBMITTED
 
 VALID_STATES = [
@@ -15,6 +19,10 @@ VALID_STATES = [
     REJECTED,
     SUBMITTED,
     WITHDRAWN,
+    PUBLISHED,
+    EDITOR_REV,
+    AUTHOR_REVISION,
+    FORMATTING
 ]
 
 
@@ -39,6 +47,8 @@ DELETE_REF = 'DRF'
 DONE = 'DON'
 REJECT = 'REJ'
 WITHDRAW = 'WIT'
+ACCEPT_WITH_REVISION = 'AWR'
+SUBMIT_REV = 'SRV'
 # for testing:
 TEST_ACTION = ACCEPT
 
@@ -48,7 +58,9 @@ VALID_ACTIONS = [
     DELETE_REF,
     DONE,
     REJECT,
-    WITHDRAW
+    WITHDRAW,
+    ACCEPT_WITH_REVISION,
+    SUBMIT_REV
 ]
 
 
@@ -97,6 +109,18 @@ STATE_TABLE = {
         DELETE_REF: {
             FUNC: delete_ref,
         },
+        ACCEPT: {
+            FUNC: lambda **kwargs: COPY_EDIT,
+        },
+        REJECT: {
+            FUNC: lambda **kwargs: REJECTED,
+        },
+        ACCEPT_WITH_REVISION: {
+            FUNC: lambda **kwargs: AUTHOR_REVISION,
+        },
+        SUBMIT_REV: {
+            FUNC: lambda **kwargs: IN_REF_REV,
+        },
         **COMMON_ACTIONS,
     },
     COPY_EDIT: {
@@ -106,6 +130,30 @@ STATE_TABLE = {
         **COMMON_ACTIONS,
     },
     AUTHOR_REV: {
+        DONE: {
+            FUNC: lambda **kwargs: FORMATTING,
+        },
+        **COMMON_ACTIONS,
+    },
+    AUTHOR_REVISION: {
+        DONE: {
+            FUNC: lambda **kwargs: EDITOR_REV,
+        },
+        **COMMON_ACTIONS,
+    },
+    EDITOR_REV: {
+        ACCEPT: {
+            FUNC: lambda **kwargs: COPY_EDIT,
+        },
+        **COMMON_ACTIONS,
+    },
+    FORMATTING: {
+        DONE: {
+            FUNC: lambda **kwargs: PUBLISHED,
+        },
+        **COMMON_ACTIONS,
+    },
+    PUBLISHED: {
         **COMMON_ACTIONS,
     },
     REJECTED: {
