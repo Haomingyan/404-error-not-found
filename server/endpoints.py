@@ -482,6 +482,47 @@ class ReceiveAction(Resource):
             return {'message': f'Bad action: {err}'}, HTTPStatus.NOT_ACCEPTABLE
 
 
+@api.route(f'{MANUSCRIPT_EP}/update_state')
+class ManuscriptUpdateState(Resource):
+    """
+    This endpoint updates the state of a manuscript using the update_state
+    function from manuscript.py.
+    """
+    @api.expect(api.model('ManuscriptUpdateState', {
+        mt.TITLE: fields.String(required=True,
+                                description="Manuscript Title"),
+        mt.ACTION: fields.String(required=True,
+                                 description="Action"),
+        mt.REFEREES: fields.String(required=False,
+                                   description="Referee")
+    }))
+    @api.response(HTTPStatus.OK, 'Manuscript state updated successfully')
+    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'Invalid action or state')
+    def put(self):
+        try:
+            data = request.json
+            title = data.get(mt.TITLE)
+            action = data.get(mt.ACTION)
+            kwargs = {}
+            if mt.REFEREES in data:
+                kwargs["ref"] = data.get(mt.REFEREES)
+            mt.update_state(title, action, **kwargs)
+
+            # Retrieve the updated manuscript to get its new state and history
+            updated_manuscript = mt.read_one(title)
+            return {
+                'message': "Manuscript state updated successfully!",
+                'return': [title],  # Now returning a list as expected
+                'new_state': updated_manuscript[mt.STATE],
+                'history': updated_manuscript[mt.HISTORY]
+            }, HTTPStatus.OK
+        except Exception as err:
+            return (
+                {'message': f'Error updating manuscript state: {err}'},
+                HTTPStatus.NOT_ACCEPTABLE
+            )
+
+
 if __name__ == '__main__':
     app.run(debug=True)
     if not mt.exists("test"):

@@ -87,3 +87,21 @@ def test_delete():
     result = mt.delete(TEST_TITLE)
     assert result is True
     assert not mt.exists(TEST_TITLE)
+
+
+def test_update_state():
+    if mt.exists(TEST_TITLE):
+        mt.delete(TEST_TITLE)
+
+    mt.create(TEST_TITLE, TEST_AUTHOR, TEST_AUTHOR_EMAIL,
+              TEST_TEXT, TEST_ABSTRACT, TEST_EDITOR_EMAIL)
+    
+    manuscript = mt.read_one(TEST_TITLE)
+    assert manuscript is not None
+    assert manuscript['state'] == 'SUB'
+    assert manuscript['history'] == ['SUB']
+    mt.update_state(TEST_TITLE, 'REJ')
+    updated_manuscript = mt.read_one(TEST_TITLE)
+    assert updated_manuscript['state'] == 'REJ'
+    assert updated_manuscript['history'] == ['SUB', 'REJ']
+    mt.delete(TEST_TITLE)

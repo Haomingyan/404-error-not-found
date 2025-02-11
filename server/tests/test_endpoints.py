@@ -542,3 +542,31 @@ def test_read_manuscripts(mock_read):
         assert isinstance(title, str)
         assert len(title) > 0
         assert mt.TITLE in manu
+
+def test_manuscript_update_state():
+    update_title = "Test ManuscriptUpdateState"
+    if mt.exists(update_title):
+        mt.delete(update_title)
+    mt.create(
+        update_title,
+        TEST_AUTHOR,
+        TEST_AUTHOR_EMAIL,
+        TEST_TEXT,
+        TEST_ABSTRACT,
+        TEST_EDITOR_EMAIL
+    )
+    update_data = {
+        mt.TITLE: update_title,
+        mt.ACTION: "REJ"
+    }
+    resp = TEST_CLIENT.put(f'{MANUSCRIPT_EP}/update_state', json=update_data)
+    assert resp.status_code == OK, f"Expected OK status, got {resp.status_code}. Response: {resp.get_json()}"
+    resp_json = resp.get_json()
+
+    expected_message = "Manuscript state updated successfully!"
+    assert expected_message in resp_json.get("message", ""), f"Unexpected message: {resp_json.get('message')}"
+    ret = resp_json.get("return")
+    assert isinstance(ret, list) and update_title in ret, f"Unexpected return value: {ret}"
+    updated_manuscript = mt.read_one(update_title)
+    assert updated_manuscript[mt.STATE] == "REJ", f"Expected state 'REJ', got {updated_manuscript[mt.STATE]}"
+    mt.delete(update_title)

@@ -98,3 +98,20 @@ def delete(title: str) -> bool:
 
     dbc.delete(MANUSCRIPTS_COLLECT, {TITLE: title})
     return True
+def update_state(title: str, action: str, **kwargs):
+    manuscript = read_one(title)
+    current_state = manuscript[STATE]
+    # Determine the new state using handle_action
+    new_state = qy.handle_action(
+        current_state, action, title=title, **kwargs
+    )
+    # Update the manuscript state and history in the database
+    dbc.update_doc(
+        MANUSCRIPTS_COLLECT,
+        {TITLE: title},
+        {
+            STATE: new_state,
+            HISTORY: manuscript[HISTORY] + [new_state],
+        },
+    )
+    return title
