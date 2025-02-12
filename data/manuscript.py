@@ -43,3 +43,9 @@ SAMPLE_MANU = {
     REFEREES: [],
 }
 
+def get_states() -> list:
+    return VALID_STATES
+
+
+def is_valid_state(state: str) -> bool:
+    return state in VALID_STATES
