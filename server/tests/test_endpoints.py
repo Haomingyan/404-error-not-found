@@ -570,3 +570,47 @@ def test_manuscript_update_state():
     updated_manuscript = mt.read_one(update_title)
     assert updated_manuscript[mt.STATE] == "REJ", f"Expected state 'REJ', got {updated_manuscript[mt.STATE]}"
     mt.delete(update_title)
+
+
+TEST_CLIENT = ep.app.test_client()
+MANUSCRIPT_EP = '/manuscript'
+
+def test_manuscript_update_endpoint():
+    title = "Test Manuscript Update"
+
+    if mt.exists(title):
+        mt.delete(title)
+
+    mt.create(
+        title,
+        "Original Author",
+        "original@example.com",
+        "Original text",
+        "Original abstract",
+        "editor@example.com"
+    )
+
+    updated_payload = {
+        mt.TITLE: title,
+        mt.AUTHOR: "Updated Author",
+        mt.AUTHOR_EMAIL: "updated@example.com",
+        mt.TEXT: "Updated text",
+        mt.ABSTRACT: "Updated abstract",
+        mt.EDITOR_EMAIL: "updated_editor@example.com"
+    }
+
+    response = TEST_CLIENT.put(f'{MANUSCRIPT_EP}/update', json=updated_payload)
+    assert response.status_code == HTTPStatus.OK, (
+        f"Expected OK, got {response.status_code}. Response: {response.get_json()}"
+    )
+    data = response.get_json()
+    assert "Manuscript updated successfully" in data.get("Message", "")
+
+    updated_manuscript = mt.read_one(title)
+    assert updated_manuscript[mt.AUTHOR] == "Updated Author"
+    assert updated_manuscript[mt.AUTHOR_EMAIL] == "updated@example.com"
+    assert updated_manuscript[mt.TEXT] == "Updated text"
+    assert updated_manuscript[mt.ABSTRACT] == "Updated abstract"
+    assert updated_manuscript[mt.EDITOR_EMAIL] == "updated_editor@example.com"
+
+    mt.delete(title)
