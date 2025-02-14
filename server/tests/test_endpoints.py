@@ -614,3 +614,40 @@ def test_manuscript_update_endpoint():
     assert updated_manuscript[mt.EDITOR_EMAIL] == "updated_editor@example.com"
 
     mt.delete(title)
+
+@patch('server.endpoints.qy.handle_action', return_value='NEW_STATE')
+def test_receive_action_endpoint(mock_handle_action):
+    title = "Test Receive Action Manuscript"
+
+    # Ensure the manuscript does not already exist
+    if mt.exists(title):
+        mt.delete(title)
+
+    # Create a test manuscript using the direct function call
+    mt.create(
+        title,
+        "Test Author",
+        "test@example.com",
+        "Test text",
+        "Test abstract",
+        "editor@example.com"
+    )
+
+    # Prepare the payload for the receive_action endpoint.
+    payload = {
+        mt.TITLE: title,
+        mt.STATE: "SUB",  # Assuming "SUB" is the current state
+        mt.ACTION: "APPROVE"  # An example action
+    }
+
+    # Call the receive_action endpoint via a PUT request.
+    response = TEST_CLIENT.put(f'{MANUSCRIPT_EP}/receive_action', json=payload)
+    assert response.status_code == HTTPStatus.OK, (
+        f"Expected OK, got {response.status_code}. Response: {response.get_json()}"
+    )
+    data = response.get_json()
+    # Verify that the patched handle_action returned "NEW_STATE"
+    assert data.get("new_state") == "NEW_STATE", f"Expected 'NEW_STATE' but got {data.get('new_state')}"
+
+    # Cleanup: delete the test manuscript
+    mt.delete(title)
