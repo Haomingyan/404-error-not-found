@@ -33,15 +33,15 @@ RETURN = 'return'
 MANUSCRIPT_EP = '/manuscript'
 
 person_model = api.model('Person', {
-    'name': fields.String(required=True, description='The person\'s name'),
-    'affiliation': fields.String(required=True,
+    ppl.NAME: fields.String(required=True, description='The person\'s name'),
+    ppl.AFFILIATION: fields.String(required=True,
                                  description='The person\'s affiliation'),
-    'email': fields.String(required=True, description='The person\'s email'),
-    'role': fields.String(required=True, description='The person\'s role')
+    ppl.EMAIL: fields.String(required=True, description='The person\'s email'),
+    ppl.ROLES: fields.String(required=True, description='The person\'s role')
 })
 
 email_model = api.model('Email', {
-    'email': fields.String(required=True, description="The person's email")
+    ppl.EMAIL: fields.String(required=True, description="The person's email")
 })
 
 

@@ -11,6 +11,7 @@ from http.client import (
 from unittest.mock import patch
 from data.people import NAME
 import data.manuscripts.manuscript as mt
+import data.people as ppl
 
 import pytest
 import json
@@ -63,10 +64,10 @@ def test_title():
 @pytest.fixture
 def person_data():
     return {
-        "name": "Test",
-        "affiliation": "Test",
-        "email": "newtestuser4@example.com",
-        "role": "AU"
+        ppl.NAME: "Test",
+        ppl.AFFILIATION: "Test",
+        ppl.EMAIL: "newtestuser4@example.com",
+        ppl.ROLES: "AU"
     }
 
 # Modified test_create_person to use fixture
@@ -87,7 +88,7 @@ def test_create_person(person_data):
         # Delete the created person
         delete_resp = TEST_CLIENT.delete(
             ep.PEOPLE_EP,
-            json={"email": "newtestuser4@example.com"}
+            json={ppl.EMAIL: "newtestuser4@example.com"}
         )
         print("DELETE Response:", delete_resp.get_json())
         assert delete_resp.status_code == OK, f"Cleanup failed: {delete_resp.get_json()}"
@@ -117,7 +118,7 @@ def test_create_duplicate_person(person_data):
         # Cleanup: Delete the created person
         delete_resp = TEST_CLIENT.delete(
             ep.PEOPLE_EP,
-            json={"email": person_data["email"]}
+            json={ppl.EMAIL: person_data[ppl.EMAIL]}
         )
         print("DELETE Response:", delete_resp.get_json())
         assert delete_resp.status_code == OK, f"Cleanup failed: {delete_resp.get_json()}"
@@ -170,9 +171,9 @@ def test_read_nonexistent_person(mock_read):
 @patch("data.people.delete_person", autospec=True, return_value=True)
 def test_delete_person(mock_delete):
     person_data = {
-        "name": "Delete Test",
-        "affiliation": "Test",
-        "email": "deleteuser@example.com"
+        ppl.NAME: "Delete Test",
+        ppl.AFFILIATION: "Test",
+        ppl.EMAIL: "deleteuser@example.com"
     }
 
     # Create the person to be deleted
@@ -184,7 +185,7 @@ def test_delete_person(mock_delete):
     # Delete the person (mocking the delete function)
     resp = TEST_CLIENT.delete(
         ep.PEOPLE_EP,
-        json={"email": "deleteuser@example.com"}
+        json={ppl.EMAIL: "deleteuser@example.com"}
     )
 
     assert resp.status_code == OK
@@ -195,7 +196,7 @@ def test_delete_person(mock_delete):
     mock_delete.return_value = False  # Simulate that the person no longer exists
     resp = TEST_CLIENT.delete(
         ep.PEOPLE_EP,
-        json={"email": "deleteuser@example.com"}
+        json={ppl.EMAIL: "deleteuser@example.com"}
     )
 
     assert resp.status_code == NOT_FOUND
@@ -237,19 +238,19 @@ def test_delete_person(mock_delete):
 @pytest.fixture
 def update_person_data():
     return {
-        "name": "Original Name",
-        "affiliation": "Original Affiliation",
-        "email": "updateuser@example.com",
-        "role": "author"
+        ppl.NAME: "Original Name",
+        ppl.AFFILIATION: "Original Affiliation",
+        ppl.EMAIL: "updateuser@example.com",
+        ppl.ROLES: "author"
     }
 
 @pytest.fixture
 def non_existent_person_data():
     return {
-        "name": "Nonexistent Person",
-        "affiliation": "Unknown",
-        "email": "nonexistent@example.com",
-        "role": "author"
+        ppl.NAME: "Nonexistent Person",
+        ppl.AFFILIATION: "Unknown",
+        ppl.EMAIL: "nonexistent@example.com",
+        ppl.ROLES: "author"
     }
 
 def test_update_nonexistent_person(non_existent_person_data):
@@ -261,18 +262,18 @@ def test_update_nonexistent_person(non_existent_person_data):
 
 @patch('data.people.update_person', autospec=True, return_value={
     'id': '1234',
-    'name': 'Updated Name',
-    'affiliation': 'Updated Affiliation',
-    'email': 'updateuser@example.com',
-    'roles': ['editor']
+    ppl.NAME: 'Updated Name',
+    ppl.AFFILIATION: 'Updated Affiliation',
+    ppl.EMAIL: 'updateuser@example.com',
+    ppl.ROLES: ['editor']
 })
 def test_update(mock_update):
     update_data = {
         "id": "1234",
-        "name": "Updated Name",
-        "affiliation": "Updated Affiliation",
-        "email": "updateuser@example.com",
-        "role": "editor"
+        ppl.NAME: "Updated Name",
+        ppl.AFFILIATION: "Updated Affiliation",
+        ppl.EMAIL: "updateuser@example.com",
+        ppl.ROLES: "editor"
     }
     resp = TEST_CLIENT.put(
         ep.PEOPLE_EP,
