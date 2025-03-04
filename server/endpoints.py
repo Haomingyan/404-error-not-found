@@ -35,7 +35,7 @@ MANUSCRIPT_EP = '/manuscript'
 person_model = api.model('Person', {
     ppl.NAME: fields.String(required=True, description='The person\'s name'),
     ppl.AFFILIATION: fields.String(required=True,
-                                 description='The person\'s affiliation'),
+                                   description='The person\'s affiliation'),
     ppl.EMAIL: fields.String(required=True, description='The person\'s email'),
     ppl.ROLES: fields.String(required=True, description='The person\'s role')
 })
@@ -112,10 +112,10 @@ class People(Resource):
         Update an existing person.
         """
         data = request.json
-        name = data.get('name')
-        affiliation = data.get('affiliation')
-        email = data.get('email')
-        role = data.get('role')
+        name = data.get(ppl.NAME)
+        affiliation = data.get(ppl.AFFILIATION)
+        email = data.get(ppl.EMAIL)
+        role = data.get(ppl.ROLES)
         try:
             updated_person = ppl.update_person(name, affiliation, email, role)
         except Exception as err:
