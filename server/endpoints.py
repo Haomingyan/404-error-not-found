@@ -252,6 +252,21 @@ class TextEntry(Resource):
             return {'message': 'Text entry not found'}, HTTPStatus.NOT_FOUND
 
 
+MASTHEAD = 'Masthead'
+
+
+@api.route(f'{PEOPLE_EP}/masthead')
+class Masthead(Resource):
+    """
+    Get a journal's masthead.
+    """
+    def get(self):
+        """
+        Retrieve a journal's masthead.
+        """
+        return {MASTHEAD: ppl.get_masthead()}
+
+
 @api.route(f'{MANUSCRIPT_EP}/read')
 class Manuscripts(Resource):
     """

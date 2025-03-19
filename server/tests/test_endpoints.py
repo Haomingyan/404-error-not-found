@@ -404,6 +404,16 @@ def test_endpoints(test_client):
     assert isinstance(resp_json["Available endpoints"], list)
     assert len(resp_json["Available endpoints"]) > 0
 
+
+@patch('data.people.get_masthead', autospec=True, return_value={})
+def test_get_masthead(mock_get_masthead):
+    resp = TEST_CLIENT.get(f'{ep.PEOPLE_EP}/masthead')
+    assert resp.status_code == OK
+    resp_json = resp.get_json()
+    assert isinstance(resp_json, dict)
+    assert ep.MASTHEAD in resp_json
+
+
 TEST_TITLE = "Test Title"
 TEST_EMAIL = "test@nyu.edu"
 MANUSCRIPT_DATA = {
