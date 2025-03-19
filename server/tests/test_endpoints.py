@@ -413,7 +413,6 @@ def test_get_masthead(mock_get_masthead):
     assert isinstance(resp_json, dict)
     assert ep.MASTHEAD in resp_json
 
-
 TEST_TITLE = "Test Title"
 TEST_EMAIL = "test@nyu.edu"
 MANUSCRIPT_DATA = {
