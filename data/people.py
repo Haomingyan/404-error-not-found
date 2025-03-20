@@ -191,4 +191,3 @@ def update_person(name: str, affiliation: str, email: str, roles: list):
     else:
         # Raise an error if the person does not exist in MongoDB
         raise ValueError(f'Person with email {email} does not exist')
-
