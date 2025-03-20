@@ -166,11 +166,11 @@ def get_masthead():
     return masthead
 
 
-def update_person(name: str, affiliation: str, email: str, role: str):
+def update_person(name: str, affiliation: str, email: str, roles: list):
     """
     Update the details of an existing person in MongoDB.
     If the person with the given email exists,
-    update their name, affiliation, and role.
+    update their name, affiliation, and roles (overwriting existing roles).
     """
     # Fetch the person from MongoDB
     person = dbc.fetch_one(PEOPLE_COLLECT, {"email": email})
@@ -179,13 +179,9 @@ def update_person(name: str, affiliation: str, email: str, role: str):
         # Prepare the fields to update
         update_fields = {
             NAME: name,
-            AFFILIATION: affiliation
+            AFFILIATION: affiliation,
+            ROLES: roles
         }
-
-        # Check if the role is not already in the
-        # roles list and add it if necessary
-        if role and role not in person.get(ROLES, []):
-            update_fields[ROLES] = [role]
 
         # Use update_doc to apply the updates
         dbc.update_doc(PEOPLE_COLLECT, {"email": email}, update_fields)
@@ -195,3 +191,4 @@ def update_person(name: str, affiliation: str, email: str, role: str):
     else:
         # Raise an error if the person does not exist in MongoDB
         raise ValueError(f'Person with email {email} does not exist')
+
