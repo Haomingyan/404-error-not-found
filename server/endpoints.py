@@ -44,6 +44,16 @@ email_model = api.model('Email', {
     ppl.EMAIL: fields.String(required=True, description="The person's email")
 })
 
+login_model = api.model('Login', {
+    'email': fields.String(required=True, description="Your email"),
+    'password': fields.String(required=True, description="Your password"),
+})
+
+register_model = api.model('Register', {
+    'email': fields.String(required=True, description="Your email"),
+    'password': fields.String(required=True, description="Your password"),
+})
+
 
 @api.route(HELLO_EP)
 class HelloWorld(Resource):
@@ -536,6 +546,44 @@ class ManuscriptUpdateState(Resource):
                 {'message': f'Error updating manuscript state: {err}'},
                 HTTPStatus.NOT_ACCEPTABLE
             )
+
+    @api.route('/register')
+    class Register(Resource):
+        @api.expect(register_model)
+        @api.response(HTTPStatus.CREATED, 'User registered successfully')
+        @api.response(HTTPStatus.CONFLICT,
+                      'User already exists or invalid input')
+        def post(self):
+            data = request.json
+            try:
+                email = ppl.register_user(
+                    email=data['email'],
+                    password=data['password']
+                )
+                return {'message': 'User registered successfully',
+                        'email': email}, HTTPStatus.CREATED
+            except Exception as e:
+                return {'message': str(e)}, HTTPStatus.CONFLICT
+
+    @api.route('/login')
+    class Login(Resource):
+        @api.expect(login_model)
+        @api.response(HTTPStatus.OK, 'Login successful')
+        @api.response(HTTPStatus.UNAUTHORIZED, 'Invalid credentials')
+        def post(self):
+            data = request.json
+            email = data.get('email')
+            password = data.get('password')
+            if ppl.login_user(email, password):
+                return (
+                    {'message': 'Login successful'},
+                    HTTPStatus.OK
+                )
+            else:
+                return (
+                    {'message': 'Invalid email or password'},
+                    HTTPStatus.UNAUTHORIZED
+                )
 
 
 if __name__ == '__main__':

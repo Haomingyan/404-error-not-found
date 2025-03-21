@@ -8,7 +8,10 @@ import data.db_connect as dbc
 
 import data.roles as rls
 
+from werkzeug.security import generate_password_hash, check_password_hash
+
 PEOPLE_COLLECT = 'people'
+USER_COLLECT = 'users'
 
 MIN_USER_NAME_LEN = 2
 
@@ -191,3 +194,37 @@ def update_person(name: str, affiliation: str, email: str, roles: list):
     else:
         # Raise an error if the person does not exist in MongoDB
         raise ValueError(f'Person with email {email} does not exist')
+
+
+PASSWORD = 'password'
+
+
+def register_user(email: str, password: str):
+    existing_user = dbc.read_one(USER_COLLECT, {EMAIL: email})
+    if existing_user:
+        raise ValueError(f'User already exists: {email}')
+    if not is_valid_email(email):
+        raise ValueError(f'Invalid email: {email}')
+    if not password:
+        raise ValueError('Password is required.')
+
+    hashed_pw = generate_password_hash(password)
+
+    user = {
+        EMAIL: email,
+        PASSWORD: hashed_pw,
+    }
+
+    dbc.create(USER_COLLECT, user)
+    print(f'User registered: {email}')
+    return email
+
+
+def login_user(email: str, password: str) -> bool:
+    person = dbc.fetch_one(USER_COLLECT, {EMAIL: email})
+    if person is None:
+        return False
+    stored_pw = person.get(PASSWORD)
+    if not stored_pw:
+        return False
+    return check_password_hash(stored_pw, password)
