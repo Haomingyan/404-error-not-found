@@ -591,37 +591,20 @@ class ManuscriptUpdateState(Resource):
     class Roles(Resource):
         def get(self):
             """
-            return all the roles
+            - ?type=codes         => return the roles codes
+            - ?type=descriptions  => return the roles description
+            - ?type=masthead      => return the roles masthead
             """
-            return {'data': {'roles': get_roles()}}
+            role_type = request.args.get('type')
 
-
-    @api.route('/role_codes')
-    class RoleCodes(Resource):
-        def get(self):
-            """
-            return all the role codes
-            """
-            return {'data': {'role_codes': get_role_codes()}}
-
-
-    @api.route('/role_descriptions')
-    class RoleDescriptions(Resource):
-        def get(self):
-            """
-            return all the roles descriptions
-            """
-            return {'data': {'role_descriptions': get_role_descriptions()}}
-
-
-    @api.route('/masthead_roles')
-    class MastheadRoles(Resource):
-        def get(self):
-            """
-            return all the masthead roles
-            """
-            return {'data': {'masthead_roles': get_masthead_roles()}}
-
+            if role_type == 'codes':
+                return {'data': {'role_codes': get_role_codes()}}
+            elif role_type == 'descriptions':
+                return {'data': {'role_descriptions': get_role_descriptions()}}
+            elif role_type == 'masthead':
+                return {'data': {'masthead_roles': get_masthead_roles()}}
+            else:
+                return {'data': {'roles': get_roles()}}
 
 
 if __name__ == '__main__':
