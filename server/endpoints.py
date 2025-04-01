@@ -304,6 +304,8 @@ manuscript_model = api.model('Manuscript', {
                               description='A summary of the manuscript'),
     'editor_email': fields.String(required=True,
                                   description='Editor email'),
+    'curr_state': fields.String(required=True,
+                                description='Current state of the manuscript'),
     'referees': fields.Raw(required=False,
                            description='Dictionary of referees',
                            example={
@@ -314,6 +316,27 @@ manuscript_model = api.model('Manuscript', {
                            }),
 })
 
+
+@api.route(f'{MANUSCRIPT_EP}/states')
+class ManuscriptStates(Resource):
+    """
+    This endpoint returns all available manuscript states.
+    """
+    def get(self):
+        return {
+            "states": [
+                "Submitted",
+                "Referee Review",
+                "Author Revisions",
+                "Editor Review",
+                "Copy Edit",
+                "Formatting",
+                "Rejected",
+                "Withdrawn",
+                "Done",
+                "Published"
+            ]
+        }
 
 @api.route(f'{MANUSCRIPT_EP}/create')
 class ManuscriptCreate(Resource):
@@ -336,6 +359,7 @@ class ManuscriptCreate(Resource):
             text = data.get('text')
             abstract = data.get('abstract')
             editor_email = data.get('editor_email')
+            curr_state = data.get('curr_state')
 
             ret = mt.create(title, author,
                             author_email, text,
@@ -418,6 +442,7 @@ class ManuscriptUpdate(Resource):
         text = data.get('text')
         abstract = data.get('abstract')
         editor_email = data.get('editor_email')
+        curr_state = data.get('curr_state')
 
         # Check if the manuscript exists before attempting update
         if not mt.exists(title):
@@ -432,6 +457,7 @@ class ManuscriptUpdate(Resource):
             mt.TEXT: text,
             mt.ABSTRACT: abstract,
             mt.EDITOR_EMAIL: editor_email,
+            mt.STATE: curr_state,
         }
 
         try:
@@ -605,6 +631,14 @@ class ManuscriptUpdateState(Resource):
                 return {'data': {'masthead_roles': get_masthead_roles()}}
             else:
                 return {'data': {'roles': get_roles()}}
+
+
+    PEOPLE_CREATE_FLDS = api.model('AddNewPeopleEntry', {
+        ppl.NAME: fields.String,
+        ppl.EMAIL: fields.String,
+        ppl.AFFILIATION: fields.String,
+        ppl.ROLES: fields.String,
+    })
 
 
 if __name__ == '__main__':
