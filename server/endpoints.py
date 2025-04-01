@@ -14,7 +14,8 @@ import data.people as ppl
 import data.text as txt
 import data.manuscripts.manuscript as mt
 import data.manuscripts.query as qy
-from data.roles import get_roles, get_role_codes, get_role_descriptions, get_masthead_roles
+from data.roles import (get_roles, get_role_codes,
+                        get_role_descriptions, get_masthead_roles)
 
 app = Flask(__name__)
 CORS(app)
@@ -585,7 +586,6 @@ class ManuscriptUpdateState(Resource):
                     {'message': 'Invalid email or password'},
                     HTTPStatus.UNAUTHORIZED
                 )
-
 
     @api.route('/roles')
     class Roles(Resource):
