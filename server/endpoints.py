@@ -442,7 +442,7 @@ class ManuscriptUpdate(Resource):
         text = data.get('text')
         abstract = data.get('abstract')
         editor_email = data.get('editor_email')
-        curr_state = data.get('curr_state')
+        state = data.get('state')
 
         # Check if the manuscript exists before attempting update
         if not mt.exists(title):
@@ -457,11 +457,12 @@ class ManuscriptUpdate(Resource):
             mt.TEXT: text,
             mt.ABSTRACT: abstract,
             mt.EDITOR_EMAIL: editor_email,
-            mt.STATE: curr_state,
+            mt.STATE: state,
         }
 
         try:
             updated_manuscript = mt.update(title, updates)
+            print(updated_manuscript)
             return {
                 MESSAGE: "Manuscript updated successfully.",
                 RETURN: updated_manuscript[mt.TITLE],

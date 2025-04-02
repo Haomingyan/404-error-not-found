@@ -85,7 +85,6 @@ def update(title: str, updates: dict) -> dict:
         raise ValueError(f'Invalid editor email: {updates[EDITOR_EMAIL]}')
 
     dbc.update_doc(MANUSCRIPTS_COLLECT, {TITLE: title}, updates)
-
     return read_one(title)
 
 
