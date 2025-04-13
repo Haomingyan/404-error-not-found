@@ -18,7 +18,7 @@ from data.roles import (get_roles, get_role_codes,
                         get_role_descriptions, get_masthead_roles)
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 api = Api(app)
 
 ENDPOINT_EP = '/endpoints'
