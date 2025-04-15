@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="60f8a6c1-fcb4-402a-ad9d-5b7209efb385" name="Changes" comment="Minor Error Update">
-      <change beforePath="$PROJECT_DIR$/server/endpoints.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/endpoints.py" afterDir="false" />
+    <list default="true" id="60f8a6c1-fcb4-402a-ad9d-5b7209efb385" name="Changes" comment="Fix manuscript update function bugs for dashboard">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/text.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/text.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,11 +43,14 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/IamtherealBrian/404-error-not-found.git&quot;,
-    &quot;accountId&quot;: &quot;33df8503-3226-42fb-82c8-19464413746e&quot;
+    &quot;accountId&quot;: &quot;9c25c976-10a1-49f9-8a49-ead88f2d863a&quot;
   }
 }</component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
@@ -64,7 +68,7 @@
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/samuelwang/404-error-not-found&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/yanghongkun/Desktop/404-error-not-found&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -102,8 +106,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PY-242.23339.19" />
-        <option value="bundled-python-sdk-0029f7779945-399fe30bd8c1-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.23339.19" />
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23339.11" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23339.11" />
       </set>
     </attachedChunks>
   </component>
@@ -129,6 +133,21 @@
       <workItem from="1732853784724" duration="8465000" />
       <workItem from="1733448483382" duration="2532000" />
       <workItem from="1733973340950" duration="3551000" />
+      <workItem from="1739242719391" duration="2578000" />
+      <workItem from="1740069595566" duration="1551000" />
+      <workItem from="1740072048247" duration="742000" />
+      <workItem from="1740513493436" duration="4024000" />
+      <workItem from="1741134924612" duration="193000" />
+      <workItem from="1741135168512" duration="336000" />
+      <workItem from="1741135569103" duration="813000" />
+      <workItem from="1741136904875" duration="614000" />
+      <workItem from="1741727072894" duration="1215000" />
+      <workItem from="1742312234175" duration="4086000" />
+      <workItem from="1743545365850" duration="6381000" />
+      <workItem from="1743611911233" duration="158000" />
+      <workItem from="1743612097825" duration="2066000" />
+      <workItem from="1743618422342" duration="6638000" />
+      <workItem from="1744300380553" duration="2789000" />
     </task>
     <task id="LOCAL-00001" summary="Add update_person endpoint test">
       <option name="closed" value="true" />
@@ -146,7 +165,47 @@
       <option name="project" value="LOCAL" />
       <updated>1728672718115</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="create Security and read function">
+      <option name="closed" value="true" />
+      <created>1739290946301</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1739290946301</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Create needs_recs function for security">
+      <option name="closed" value="true" />
+      <created>1739291216558</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1739291216558</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Create manuscript update function for dashboard">
+      <option name="closed" value="true" />
+      <created>1743550860581</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1743550860581</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Fix manuscript update function bugs for dashboard">
+      <option name="closed" value="true" />
+      <created>1743614146994</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1743614146995</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Fix manuscript update function bugs for dashboard">
+      <option name="closed" value="true" />
+      <created>1743692430716</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1743692430716</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -155,10 +214,25 @@
   <component name="UnknownFeatures">
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.mk" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Add update_person endpoint test" />
     <MESSAGE value="Minor Error Update" />
-    <option name="LAST_COMMIT_MESSAGE" value="Minor Error Update" />
+    <MESSAGE value="create Security and read function" />
+    <MESSAGE value="Create needs_recs function for security" />
+    <MESSAGE value="Create manuscript update function for dashboard" />
+    <MESSAGE value="Fix manuscript update function bugs for dashboard" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix manuscript update function bugs for dashboard" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -166,6 +240,11 @@
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/data/tests/test_people.py</url>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/server/endpoints.py</url>
+          <line>469</line>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

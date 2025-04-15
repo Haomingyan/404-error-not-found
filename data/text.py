@@ -16,10 +16,10 @@ text_dict = {
         TITLE: 'Home Page',
         TEXT: 'This is a journal about building API servers.',
     },
-    DEL_KEY: {
-        TITLE: 'Home Page',
-        TEXT: 'This is a journal about building API servers.',
-    },
+    # DEL_KEY: {
+    #     TITLE: 'Home Page',
+    #     TEXT: 'This is a journal about building API servers.',
+    # },
 }
 
 
