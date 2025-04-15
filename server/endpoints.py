@@ -338,6 +338,7 @@ class ManuscriptStates(Resource):
             ]
         }
 
+
 @api.route(f'{MANUSCRIPT_EP}/create')
 class ManuscriptCreate(Resource):
     """
@@ -359,7 +360,7 @@ class ManuscriptCreate(Resource):
             text = data.get('text')
             abstract = data.get('abstract')
             editor_email = data.get('editor_email')
-            curr_state = data.get('curr_state')
+            # curr_state = data.get('curr_state')
 
             ret = mt.create(title, author,
                             author_email, text,
@@ -633,13 +634,34 @@ class ManuscriptUpdateState(Resource):
             else:
                 return {'data': {'roles': get_roles()}}
 
-
     PEOPLE_CREATE_FLDS = api.model('AddNewPeopleEntry', {
         ppl.NAME: fields.String,
         ppl.EMAIL: fields.String,
         ppl.AFFILIATION: fields.String,
         ppl.ROLES: fields.String,
     })
+
+    @api.route('/dev/system-info')
+    class SystemInfo(Resource):
+        @api.response(HTTPStatus.OK, 'Success')
+        @api.response(HTTPStatus.FORBIDDEN, 'User has no access rights')
+        def get(self):
+            """
+            fetch the developing information
+            """
+            import sys
+            import platform
+            import flask
+            
+            system_info = {
+                'python_version': sys.version,
+                'platform': platform.platform(),
+                'flask_version': flask.__version__,
+                'endpoints': [rule.rule for rule in api.app.url_map.iter_rules()],
+                'total_endpoints': len([rule.rule for rule in api.app.url_map.iter_rules()])
+            }
+            
+            return {'data': {'system_info': system_info}}
 
 
 if __name__ == '__main__':
