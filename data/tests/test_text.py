@@ -40,7 +40,7 @@ def test_create_duplicate_text():
 
 def test_delete_text():
     # First, ensure the key exists
-    key_to_delete = txt.DEL_KEY
+    key_to_delete = 'NewPage'
     assert key_to_delete in txt.text_dict
 
     # Delete the text and check it is removed
