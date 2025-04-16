@@ -122,18 +122,36 @@ def delete_person(email: str):
     return email
 
 
-def create_person(name: str, affiliation: str, email: str, role: str):
+def create_person(name: str,
+                  affiliation: str,
+                  email: str,
+                  role: str = None,
+                  roles: list = None):
+    """
+    Create a new person. Supports either a single `role` str or a list of `roles`.
+    """
     if exists(email):
         raise ValueError(f'Adding duplicate {email=}')
-    if is_valid_person(name, affiliation, email, role=role):
-        roles = []
-        if role:
-            roles.append(role)
-        person = {NAME: name, AFFILIATION: affiliation,
-                  EMAIL: email, ROLES: roles}
-        print(person)
-        dbc.create(PEOPLE_COLLECT, person)
-        return email
+
+    # Normalize into a list
+    if roles is not None:
+        # validate each role in the list
+        is_valid_person(name, affiliation, email, roles=roles)
+        roles_list = roles
+    else:
+        # fallback to single-role mode
+        is_valid_person(name, affiliation, email, role=role)
+        roles_list = [role] if role else []
+
+    person = {
+        NAME: name,
+        AFFILIATION: affiliation,
+        EMAIL: email,
+        ROLES: roles_list
+    }
+    print("Creating person:", person)
+    dbc.create(PEOPLE_COLLECT, person)
+    return email
 
 
 def has_arole(person: dict, role: str):
