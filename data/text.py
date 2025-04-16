@@ -66,7 +66,6 @@ def delete_text(key):
     """
     Delete an existing text entry from text_dict.
     """
-    global text_dict
     if key not in text_dict:
         raise ValueError(f'Text with key "{key}" does not exist.')
 
