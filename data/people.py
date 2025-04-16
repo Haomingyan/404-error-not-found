@@ -127,9 +127,7 @@ def create_person(name: str,
                   email: str,
                   role: str = None,
                   roles: list = None):
-    """
-    Create a new person. Supports either a single `role` str or a list of `roles`.
-    """
+
     if exists(email):
         raise ValueError(f'Adding duplicate {email=}')
 
