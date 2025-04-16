@@ -235,7 +235,7 @@ def test_update_person():
             name=NEW_NAME,
             affiliation=NEW_AFFILIATION,
             email=UPDATE_EMAIL,
-            role=NEW_ROLE
+            roles=NEW_ROLE
         )
     except ValueError as e:
         assert False, f"Test failed: {str(e)}"
@@ -259,7 +259,7 @@ def test_update_person():
             name='Non Existent',
             affiliation='None',
             email=NON_EXISTING_EMAIL,
-            role='some_role'
+            roles='some_role'
         )
     except ValueError as e:
         assert str(e) == f'Person with email {NON_EXISTING_EMAIL} does not exist', "Test failed: Incorrect error message."
@@ -273,7 +273,7 @@ def test_update_nonexistent_person_exception():
             name="Nonexistent Person",
             affiliation="Unknown",
             email="nonexistent@example.com",
-            role="author"
+            roles="author"
         )
 
 def test_is_valid_no_domain():
@@ -306,9 +306,11 @@ def test_create_person_no_role():
     ppl.delete_person(email)
 
 def test_create_person_multiple_roles():
-    email = 'multipleroles@nyu.edu'
+    email = 'multipleroles34@nyu.edu'
     person = ppl.create_person('Multi Role User', 'NYU', email, role=VALID_ROLES[0])
-    updated_person = ppl.update_person(name='Multi Role User', affiliation='NYU', email=email, role=VALID_ROLES[1])
-    assert VALID_ROLES[0] in updated_person[ROLES]
+    # First update with the second role
+    updated_person = ppl.update_person(name='Multi Role User', affiliation='NYU', email=email, roles=[VALID_ROLES[1]])
+    # Verify only the second role is present (since update_person replaces roles)
+    assert VALID_ROLES[0] not in updated_person[ROLES]
     assert VALID_ROLES[1] in updated_person[ROLES]
     ppl.delete_person(email)

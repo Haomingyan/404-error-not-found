@@ -40,7 +40,7 @@ def get_states() -> list:
 def is_valid_state(state: str) -> bool:
     return state in VALID_STATES
 
-
+#Actions:
 ACCEPT = 'ACC'
 ASSIGN_REF = 'ARF'
 DELETE_REF = 'DRF'

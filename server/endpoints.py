@@ -652,15 +652,15 @@ class ManuscriptUpdateState(Resource):
             import sys
             import platform
             import flask
-            
             system_info = {
                 'python_version': sys.version,
                 'platform': platform.platform(),
                 'flask_version': flask.__version__,
-                'endpoints': [rule.rule for rule in api.app.url_map.iter_rules()],
-                'total_endpoints': len([rule.rule for rule in api.app.url_map.iter_rules()])
+                'endpoints': [rule.rule for rule in
+                              api.app.url_map.iter_rules()],
+                'total_endpoints': len([rule.rule for rule in
+                                        api.app.url_map.iter_rules()])
             }
-            
             return {'data': {'system_info': system_info}}
 
 

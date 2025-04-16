@@ -19,7 +19,7 @@ text_dict = {
     # DEL_KEY: {
     #     TITLE: 'Home Page',
     #     TEXT: 'This is a journal about building API servers.',
-    #},
+    # },
 }
 
 

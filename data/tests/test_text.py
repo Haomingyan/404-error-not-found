@@ -8,11 +8,7 @@ def test_read():
         txt.TEST_KEY: {
             txt.TITLE: 'Home Page',
             txt.TEXT: 'This is a journal about building API servers.',
-        },
-        txt.DEL_KEY: {
-            txt.TITLE: 'Home Page',
-            txt.TEXT: 'This is a journal about building API servers.',
-        },
+        }
     }
     # Call the `read` function
     result = txt.read()

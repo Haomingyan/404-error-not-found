@@ -173,7 +173,7 @@ def update_person(name: str, affiliation: str, email: str, roles: list):
     """
     Update the details of an existing person in MongoDB.
     If the person with the given email exists,
-    update their name, affiliation, and roles (overwriting existing roles).
+    update their name, affiliation, and roles (appending to existing roles).
     """
     # Fetch the person from MongoDB
     person = dbc.fetch_one(PEOPLE_COLLECT, {"email": email})
