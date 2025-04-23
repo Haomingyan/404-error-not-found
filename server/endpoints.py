@@ -297,12 +297,34 @@ class Manuscripts(Resource):
 class ManuscriptStates(Resource):
 
     def get(self):
+        # Get all manuscripts
+        manuscripts = mt.read()
+        
+        # For each manuscript, get its current state and available actions
+        state_info = {}
+        for title, manuscript in manuscripts.items():
+            current_state = manuscript.get(mt.STATE, '')
+            available_actions = list(qy.get_valid_actions_by_state(current_state))
+            
+            state_info[title] = {
+                'current_state': current_state,
+                'available_actions': available_actions,
+                '_links': {
+                    'update_state': {
+                        'href': f'{MANUSCRIPT_EP}/update_state',
+                        'method': 'PUT',
+                        'description': 'Update manuscript state'
+                    }
+                }
+            }
+        
         return {
             'states': [
                 'Submitted', 'Referee Review', 'Author Revisions',
                 'Editor Review', 'Copy Edit', 'Formatting', 'Rejected',
                 'Withdrawn', 'Done', 'Published',
-            ]
+            ],
+            'manuscripts': state_info
         }
 
 
