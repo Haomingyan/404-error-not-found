@@ -72,8 +72,8 @@ def person_data():
 
 # Modified test_create_person to use fixture
 def test_create_person(person_data):
+    person_data["login_key"] = "valid"
     try:
-        # Create a new person
         resp = TEST_CLIENT.post(
             ep.PEOPLE_EP,
             json=person_data
@@ -81,20 +81,21 @@ def test_create_person(person_data):
         assert resp.status_code == OK
         response_data = resp.get_json()
         assert response_data['Message'] == 'Person added!'
-
-        # Check if the resource exists
         print("POST Response Data:", response_data)
     finally:
-        # Delete the created person
         delete_resp = TEST_CLIENT.delete(
             ep.PEOPLE_EP,
-            json={ppl.EMAIL: "newtestuser4@example.com"}
+            json={
+                ppl.EMAIL: "newtestuser4@example.com",
+                "login_key": "valid"
+            }
         )
         print("DELETE Response:", delete_resp.get_json())
         assert delete_resp.status_code == OK, f"Cleanup failed: {delete_resp.get_json()}"
 
 
 def test_create_duplicate_person(person_data):
+    person_data["login_key"] = "valid"
     try:
         # Step 1: Create the first person
         first_resp = TEST_CLIENT.post(
@@ -118,7 +119,10 @@ def test_create_duplicate_person(person_data):
         # Cleanup: Delete the created person
         delete_resp = TEST_CLIENT.delete(
             ep.PEOPLE_EP,
-            json={ppl.EMAIL: person_data[ppl.EMAIL]}
+            json={
+                ppl.EMAIL: person_data[ppl.EMAIL],
+                "login_key": "valid"
+            }
         )
         print("DELETE Response:", delete_resp.get_json())
         assert delete_resp.status_code == OK, f"Cleanup failed: {delete_resp.get_json()}"
