@@ -8,7 +8,7 @@ from flask_cors import CORS
 from flask_restx import Api, Resource, fields
 from http import HTTPStatus
 import werkzeug.exceptions as wz
-
+import security.security as sec
 
 import data.people as ppl
 import data.text as txt
@@ -148,6 +148,14 @@ class People(Resource):
         affiliation = data.get(ppl.AFFILIATION)
         email = data.get(ppl.EMAIL)
         roles_input = data.get(ppl.ROLES)
+
+        login_key = data.get("login_key")
+        if not sec.is_permitted(
+                "people",
+                "create",
+                email,
+                login_key=login_key):
+            return {"message": "Permission denied"}, HTTPStatus.FORBIDDEN
 
         if isinstance(roles_input, list):
             role_kw = {'roles': roles_input}
