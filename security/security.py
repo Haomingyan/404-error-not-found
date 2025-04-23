@@ -72,7 +72,7 @@ GOOD_USER_ID = 'ejc369@nyu.edu'
 security_recs = None
 
 PEOPLE_CHANGE_PERMISSIONS = {
-    USER_LIST: [GOOD_USER_ID],
+    # USER_LIST: [GOOD_USER_ID],
     CHECKS: {
         LOGIN: True,
     },
@@ -87,13 +87,13 @@ TEST_RECS = {
     },
     TEXTS: {
         CREATE: {
-            USER_LIST: [GOOD_USER_ID],
+            # USER_LIST: [GOOD_USER_ID],
             CHECKS: {
                 LOGIN: True,
             },
         },
         DELETE: {
-            USER_LIST: [GOOD_USER_ID],
+            # USER_LIST: [GOOD_USER_ID],
             CHECKS: {
                 LOGIN: True,
                 IP_ADDR: True,
@@ -103,7 +103,7 @@ TEST_RECS = {
     },
     BAD_FEATURE: {
         CREATE: {
-            USER_LIST: [GOOD_USER_ID],
+            # USER_LIST: [GOOD_USER_ID],
             CHECKS: {
                 'Bad check': True,
             },
