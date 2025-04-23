@@ -9,6 +9,7 @@ from flask_restx import Api, Resource, fields
 from http import HTTPStatus
 import werkzeug.exceptions as wz
 
+
 import data.people as ppl
 import data.text as txt
 import data.manuscripts.manuscript as mt
