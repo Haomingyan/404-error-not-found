@@ -15,9 +15,9 @@ import data.people as ppl
 
 import pytest
 import json
-
+import sys
+import os
 import server.endpoints as ep
-
 TEST_CLIENT = ep.app.test_client()
 
 TEST_TITLE = "Test Manuscript"

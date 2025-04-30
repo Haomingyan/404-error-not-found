@@ -42,11 +42,15 @@ TITLE_RESP = "Title"
 person_model = api.model(
     "Person",
     {
-        ppl.NAME: fields.String(required=True, description="The person's name"),
+        ppl.NAME: fields.String(
+            required=True, description="The person's name"
+        ),
         ppl.AFFILIATION: fields.String(
             required=True, description="The person's affiliation"
         ),
-        ppl.EMAIL: fields.String(required=True, description="The person's email"),
+        ppl.EMAIL: fields.String(
+            required=True, description="The person's email"
+        ),
         ppl.ROLES: fields.List(
             fields.String, required=True, description="The person's roles"
         ),
@@ -55,7 +59,11 @@ person_model = api.model(
 
 email_model = api.model(
     "Email",
-    {ppl.EMAIL: fields.String(required=True, description="The person's email")},
+    {
+        ppl.EMAIL: fields.String(
+            required=True, description="The person's email"
+        )
+    },
 )
 
 login_model = api.model(
@@ -116,12 +124,14 @@ class People(Resource):
         roles_input = data.get(ppl.ROLES)
 
         try:
-            updated_person = ppl.update_person(name, affiliation, email, roles_input)
+            updated_person = ppl.update_person(
+                name, affiliation, email, roles_input
+            )
         except Exception as err:
             raise wz.NotAcceptable(f"Could not update person: {err}")
 
         return (
-            {MESSAGE: "Person updated successfully", RETURN: updated_person,},
+            {MESSAGE: "Person updated successfully", RETURN: updated_person},
             HTTPStatus.OK,
         )
 
@@ -136,7 +146,9 @@ class People(Resource):
         roles_input = data.get(ppl.ROLES)
 
         login_key = data.get("login_key")
-        if not sec.is_permitted("people", "create", email, login_key=login_key):
+        if not sec.is_permitted(
+            "people", "create", email, login_key=login_key
+        ):
             return {"message": "Permission denied"}, HTTPStatus.FORBIDDEN
 
         if isinstance(roles_input, list):
@@ -184,9 +196,15 @@ class Texts(Resource):
         api.model(
             "Text",
             {
-                "key": fields.String(required=True, description="Unique text ID"),
-                "title": fields.String(required=True, description="Text title"),
-                "text": fields.String(required=True, description="Text content"),
+                "key": fields.String(
+                    required=True, description="Unique text ID"
+                ),
+                "title": fields.String(
+                    required=True, description="Text title"
+                ),
+                "text": fields.String(
+                    required=True, description="Text content"
+                ),
             },
         )
     )
@@ -195,15 +213,20 @@ class Texts(Resource):
     def post(self):
         data = api.payload
         try:
-            new_text = txt.create_text(data["key"], data["title"], data["text"])
+            new_text = txt.create_text(
+                data["key"], data["title"], data["text"]
+            )
             return (
-                {"message": "Text created successfully", "text": new_text,},
+                {"message": "Text created successfully", "text": new_text},
                 HTTPStatus.CREATED,
             )
         except ValueError as e:
             return {"message": str(e)}, HTTPStatus.BAD_REQUEST
         except Exception:
-            return {"message": "Server error"}, HTTPStatus.INTERNAL_SERVER_ERROR
+            return (
+                {"message": "Server error"},
+                HTTPStatus.INTERNAL_SERVER_ERROR,
+            )
 
     @api.expect(
         api.model(
@@ -222,13 +245,16 @@ class Texts(Resource):
         try:
             updated = txt.update_text(data["key"], data["title"], data["text"])
             return (
-                {"message": "Text updated successfully", "text": updated,},
+                {"message": "Text updated successfully", "text": updated},
                 HTTPStatus.OK,
             )
         except KeyError:
             return {"message": "Text not found"}, HTTPStatus.NOT_FOUND
         except Exception:
-            return {"message": "Server error"}, HTTPStatus.INTERNAL_SERVER_ERROR
+            return (
+                {"message": "Server error"},
+                HTTPStatus.INTERNAL_SERVER_ERROR,
+            )
 
 
 @api.route(f"{TEXT_EP}/delete")
@@ -272,7 +298,9 @@ class ManuscriptStates(Resource):
 
         for title, manuscript in manuscripts.items():
             current_state = manuscript.get(mt.STATE, "")
-            available_actions = list(qy.get_valid_actions_by_state(current_state))
+            available_actions = list(
+                qy.get_valid_actions_by_state(current_state)
+            )
             state_info[title] = {
                 "current_state": current_state,
                 "available_actions": available_actions,
@@ -305,21 +333,34 @@ class ManuscriptStates(Resource):
 manuscript_model = api.model(
     "Manuscript",
     {
-        "title": fields.String(required=True, description="Title of the manuscript"),
+        "title": fields.String(
+            required=True, description="Title of the manuscript"
+        ),
         "author": fields.String(required=True, description="Author name"),
-        "author_email": fields.String(required=True, description="Author email"),
-        "text": fields.String(required=True, description="The body of the manuscript"),
+        "author_email": fields.String(
+            required=True, description="Author email"
+        ),
+        "text": fields.String(
+            required=True, description="The body of the manuscript"
+        ),
         "abstract": fields.String(
             required=True, description="A summary of the manuscript"
         ),
-        "editor_email": fields.String(required=True, description="Editor email"),
+        "editor_email": fields.String(
+            required=True, description="Editor email"
+        ),
         "curr_state": fields.String(
             required=True, description="Current manuscript state"
         ),
         "referees": fields.Raw(
             required=False,
             description="Dictionary of referees",
-            example={"ref@example.com": {"report": "Good paper", "verdict": "ACCEPT"}},
+            example={
+                "ref@example.com": {
+                    "report": "Good paper",
+                    "verdict": "ACCEPT",
+                }
+            },
         ),
     },
 )
@@ -340,10 +381,15 @@ class ManuscriptCreate(Resource):
             abstract = data.get("abstract")
             editor_email = data.get("editor_email")
 
-            ret = mt.create(title, author, author_email, text, abstract, editor_email,)
+            ret = mt.create(
+                title, author, author_email, text, abstract, editor_email,
+            )
         except Exception as e:
             return (
-                {MESSAGE: f"Could not add manuscript: {str(e)}", RETURN: None,},
+                {
+                    MESSAGE: f"Could not add manuscript: {str(e)}",
+                    RETURN: None,
+                },
                 HTTPStatus.CONFLICT,
             )
 
@@ -352,7 +398,9 @@ class ManuscriptCreate(Resource):
 
 @api.route(f"{MANUSCRIPT_EP}/delete")
 class ManuscriptDelete(Resource):
-    @api.expect(api.model("DeleteRequest", {"title": fields.String(required=True)}))
+    @api.expect(
+        api.model("DeleteRequest", {"title": fields.String(required=True)})
+    )
     @api.response(HTTPStatus.OK, "Manuscript deleted successfully")
     @api.response(HTTPStatus.NOT_ACCEPTABLE, "Invalid request")
     @api.response(HTTPStatus.NOT_FOUND, "Manuscript not found")
@@ -389,7 +437,10 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 def allowed_file(filename):
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+    return (
+        "." in filename
+        and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+    )
 
 
 @api.route(f"{MANUSCRIPT_EP}/update")
@@ -445,7 +496,8 @@ class ManuscriptUpdate(Resource):
         except Exception as e:
             return (
                 {
-                    "message": f"Error updating manuscript '{title}': " f"{str(e)}",
+                    "message": f"Error updating manuscript '{title}': "
+                    f"{str(e)}",
                     "return": None,
                 },
                 HTTPStatus.CONFLICT,
@@ -521,7 +573,9 @@ class Register(Resource):
     def post(self):
         data = request.json
         try:
-            email = ppl.register_user(email=data["email"], password=data["password"])
+            email = ppl.register_user(
+                email=data["email"], password=data["password"]
+            )
             return (
                 {"message": "User registered successfully", "email": email},
                 HTTPStatus.CREATED,
@@ -543,7 +597,10 @@ class Login(Resource):
         if ppl.login_user(email, password):
             return {"message": "Login successful"}, HTTPStatus.OK
 
-        return ({"message": "Invalid email or password"}, HTTPStatus.UNAUTHORIZED)
+        return (
+            {"message": "Invalid email or password"},
+            HTTPStatus.UNAUTHORIZED,
+        )
 
 
 @api.route("/roles")
