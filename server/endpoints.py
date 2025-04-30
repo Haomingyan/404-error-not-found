@@ -9,7 +9,8 @@ from flask_restx import Api, Resource, fields
 from http import HTTPStatus
 import werkzeug.exceptions as wz
 import security.security as sec
-
+from werkzeug.utils import secure_filename
+import os
 import data.people as ppl
 import data.text as txt
 import data.manuscripts.manuscript as mt
@@ -439,26 +440,31 @@ class ManuscriptDelete(Resource):
                 HTTPStatus.OK)
 
 
+
+UPLOAD_FOLDER = '/path/to/save/uploads'  # ⬅️ 修改为你自己的保存路径
+ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @api.route(f'{MANUSCRIPT_EP}/update')
 class ManuscriptUpdate(Resource):
 
-    @api.expect(manuscript_model)
     @api.response(HTTPStatus.OK, 'Manuscript updated successfully')
     @api.response(HTTPStatus.NOT_FOUND, 'Manuscript not found')
     @api.response(HTTPStatus.CONFLICT, 'Error updating')
     def put(self):
-        data = request.json
-        title = data.get('title')
-        author = data.get('author')
-        author_email = data.get('author_email')
-        text = data.get('text')
-        abstract = data.get('abstract')
-        editor_email = data.get('editor_email')
-        state = data.get('state')
+        title        = request.form.get('title')
+        author       = request.form.get('author')
+        author_email = request.form.get('author_email')
+        text         = request.form.get('text')
+        abstract     = request.form.get('abstract')
+        editor_email = request.form.get('editor_email')
+        state        = request.form.get('state')
+        file         = request.files.get('file')
 
         if not mt.exists(title):
-            title_missing = f"Manuscript '{title}' does not exist."
-            return {MESSAGE: title_missing, RETURN: None}, HTTPStatus.NOT_FOUND
+            return {'message': f"Manuscript '{title}' does not exist.", 'return': None}, HTTPStatus.NOT_FOUND
 
         updates = {
             mt.AUTHOR: author,
@@ -469,17 +475,20 @@ class ManuscriptUpdate(Resource):
             mt.STATE: state,
         }
 
+        # 文件处理逻辑
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(filepath)
+            updates[mt.FILE_PATH] = filepath  # 假设你在 DB 中有字段记录文件路径
+
         try:
             updated = mt.update(title, updates)
-            return {MESSAGE: 'Manuscript updated successfully',
-                    RETURN: updated[mt.TITLE]}, HTTPStatus.OK
+            return {'message': 'Manuscript updated successfully', 'return': updated[mt.TITLE]}, HTTPStatus.OK
         except ValueError as ve:
-            return {MESSAGE: str(ve), RETURN: None}, HTTPStatus.NOT_FOUND
+            return {'message': str(ve), 'return': None}, HTTPStatus.NOT_FOUND
         except Exception as e:
-            error_update = f"Error updating manuscript '{title}': {str(e)}"
-            return {MESSAGE: error_update,
-                    RETURN: None}, HTTPStatus.CONFLICT
-
+            return {'message': f"Error updating manuscript '{title}': {str(e)}", 'return': None}, HTTPStatus.CONFLICT
 
 @api.route(f'{MANUSCRIPT_EP}/receive_action')
 class ReceiveAction(Resource):
