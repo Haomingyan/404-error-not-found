@@ -585,16 +585,17 @@ def test_manuscript_update_state():
     assert updated_manuscript[mt.STATE] == "REJ", f"Expected state 'REJ', got {updated_manuscript[mt.STATE]}"
     mt.delete(update_title)
 
-
 TEST_CLIENT = ep.app.test_client()
 MANUSCRIPT_EP = '/manuscript'
 
 def test_manuscript_update_endpoint():
     title = "Test Manuscript Update"
 
+    # 确保测试前数据库中无同名项
     if mt.exists(title):
         mt.delete(title)
 
+    # 创建初始稿件数据
     mt.create(
         title,
         "Original Author",
@@ -604,21 +605,31 @@ def test_manuscript_update_endpoint():
         "editor@example.com"
     )
 
+    # 更新内容（构造 multipart/form-data 请求体）
     updated_payload = {
         mt.TITLE: title,
         mt.AUTHOR: "Updated Author",
         mt.AUTHOR_EMAIL: "updated@example.com",
         mt.TEXT: "Updated text",
         mt.ABSTRACT: "Updated abstract",
-        mt.EDITOR_EMAIL: "updated_editor@example.com"
+        mt.EDITOR_EMAIL: "updated_editor@example.com",
+        mt.STATE: "Submitted"
     }
 
-    response = TEST_CLIENT.put(f'{MANUSCRIPT_EP}/update', json=updated_payload)
+    # 发送 PUT 请求（multipart/form-data 格式）
+    response = TEST_CLIENT.put(
+        f'{MANUSCRIPT_EP}/update',
+        data=updated_payload,
+        content_type='multipart/form-data'
+    )
+
+    # 验证响应状态
     assert response.status_code == HTTPStatus.OK, (
         f"Expected OK, got {response.status_code}. Response: {response.get_json()}"
     )
+
     data = response.get_json()
-    assert "Manuscript updated successfully" in data.get("Message", "")
+    assert "Manuscript updated successfully" in data.get("message", "")
 
     updated_manuscript = mt.read_one(title)
     assert updated_manuscript[mt.AUTHOR] == "Updated Author"
@@ -628,6 +639,7 @@ def test_manuscript_update_endpoint():
     assert updated_manuscript[mt.EDITOR_EMAIL] == "updated_editor@example.com"
 
     mt.delete(title)
+
 
 @patch('server.endpoints.qy.handle_action', return_value='NEW_STATE')
 def test_receive_action_endpoint(mock_handle_action):
