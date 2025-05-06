@@ -5,9 +5,14 @@ import data.text as txt
 def test_read():
     # Expected output based on initial `text_dict` state in the module
     expected_output = {
-        txt.TEST_KEY: {
+        txt.HOMEPAGE_KEY: {
             txt.TITLE: 'Home Page',
             txt.TEXT: 'This is a journal about building API servers.',
+        },
+        txt.SUBMISSION_KEY: {
+            txt.TITLE: 'SubmissionPage',
+            txt.TEXT: 'Create a new manuscript just for you\
+in the dashboard to get started!',
         }
     }
     # Call the `read` function
@@ -28,7 +33,7 @@ def test_create_text():
     assert txt.text_dict[new_key][txt.TEXT] == text_content
 
 def test_create_duplicate_text():
-    duplicate_key = txt.TEST_KEY
+    duplicate_key = txt.HOMEPAGE_KEY
     title = 'Duplicate Title'
     text_content = 'This should raise an error.'
 
@@ -57,7 +62,7 @@ def test_delete_nonexistent_text():
     assert str(exc_info.value) == f'Text with key "{nonexistent_key}" does not exist.'
 
 def test_update_text():
-    new_key = txt.TEST_KEY
+    new_key = txt.HOMEPAGE_KEY
     new_title = 'Updated Page Title'
     new_text = 'This is the updated content'
 
@@ -80,7 +85,7 @@ def test_update_nonexistent_text():
 
 
 def test_read_one():
-    assert len(txt.read_one(txt.TEST_KEY)) > 0
+    assert len(txt.read_one(txt.HOMEPAGE_KEY)) > 0
 
 def test_read_one_not_found():
     assert txt.read_one('Not a page key!') == {}

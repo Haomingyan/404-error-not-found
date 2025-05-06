@@ -8,23 +8,20 @@ TITLE = 'title'
 TEXT = 'text'
 EMAIL = 'email'
 
-TEST_KEY = 'HomePage'
+HOMEPAGE_KEY = 'HomePage'
 DEL_KEY = 'DeletePage'
 SUBMISSION_KEY = 'SubmissionPage'
 
 text_dict = {
-    TEST_KEY: {
+    HOMEPAGE_KEY: {
         TITLE: 'Home Page',
         TEXT: 'This is a journal about building API servers.',
     },
     SUBMISSION_KEY: {
         TITLE: 'SubmissionPage',
-        TEXT: 'Create a new manuscript just for you in the dashboard to get started!',
-    },
-    # DEL_KEY: {
-    #     TITLE: 'Home Page',
-    #     TEXT: 'This is a journal about building API servers.',
-    # },
+        TEXT: 'Create a new manuscript just for you\
+in the dashboard to get started!',
+    }
 }
 
 
