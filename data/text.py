@@ -19,8 +19,9 @@ text_dict = {
     },
     SUBMISSION_KEY: {
         TITLE: 'SubmissionPage',
-        TEXT: 'Create a new manuscript just for you\
-in the dashboard to get started!',
+        TEXT: 'Create a new manuscript just for you \
+in the dashboard to get started! Make sure to include your Title, \
+Author, Email, and Abstract in your submission.'
     }
 }
 
