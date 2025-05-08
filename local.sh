@@ -2,7 +2,7 @@
 
 export FLASK_ENV=development
 export PROJ_DIR=$PWD
-export DEBUG=1  # 1 is cloud MongoDB, 0 is local MongoDB
+export DEBUG=1 
 export GAME_MONGO_PW=goodpassword
 
 # run our server locally:
