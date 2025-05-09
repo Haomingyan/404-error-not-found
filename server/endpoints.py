@@ -112,11 +112,13 @@ UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
 ALLOWED_EXTENSIONS = {"pdf", "doc", "docx"}
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+
 def allowed_file(filename):
     return (
         "." in filename
         and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
     )
+
 
 @api.route(HELLO_EP)
 class HelloWorld(Resource):
@@ -252,7 +254,9 @@ class Texts(Resource):
         text = data.get("text")
 
         if not all([key, title, text]):
-            return {"message": "Missing required fields"}, HTTPStatus.BAD_REQUEST
+            return {
+                "message": "Missing required fields"
+            }, HTTPStatus.BAD_REQUEST
 
         try:
             new_text = txt.create_text(key, title, text)
@@ -287,7 +291,9 @@ class Texts(Resource):
         text = data.get("text")
 
         if not all([key, title, text]):
-            return {"message": "Missing required fields"}, HTTPStatus.BAD_REQUEST
+            return {
+                "message": "Missing required fields"
+            }, HTTPStatus.BAD_REQUEST
 
         try:
             updated = txt.update_text(key, title, text)
@@ -519,7 +525,8 @@ class ManuscriptUpdate(Resource):
         except Exception as e:
             return (
                 {
-                    "message": f"Error updating manuscript '{title}': {str(e)}",
+                    "message":
+                        f"Error updating manuscript '{title}': {str(e)}",
                     "return": None,
                 },
                 HTTPStatus.CONFLICT,
@@ -537,7 +544,9 @@ class ReceiveAction(Resource):
             action = request.json.get(mt.ACTION)
 
             if not all([title, curr_state, action]):
-                return {"message": "Missing required fields"}, HTTPStatus.BAD_REQUEST
+                return {
+                    "message": "Missing required fields"
+                }, HTTPStatus.BAD_REQUEST
 
             kwargs = {}
             manuscript = mt.read_one(title)
@@ -599,14 +608,19 @@ class Register(Resource):
         data = request.json
         email = data.get("email")
         password = data.get("password")
-        
         if not email or not password:
-            return {"message": "Email and password are required"}, HTTPStatus.BAD_REQUEST
-            
+            return {
+                "message": "Email and password are required"
+            }, HTTPStatus.BAD_REQUEST
         try:
-            registered_email = ppl.register_user(email=email, password=password)
+            registered_email = ppl.register_user(
+                email=email,
+                password=password
+            )
             return (
-                {"message": "User registered successfully", "email": registered_email},
+                {
+                    "message": "User registered successfully",
+                    "email": registered_email},
                 HTTPStatus.CREATED,
             )
         except Exception as e:
@@ -624,7 +638,9 @@ class Login(Resource):
         password = data.get("password")
 
         if not email or not password:
-            return {"message": "Email and password are required"}, HTTPStatus.BAD_REQUEST
+            return {
+                "message": "Email and password are required"
+            }, HTTPStatus.BAD_REQUEST
 
         if ppl.login_user(email, password):
             return {"message": "Login successful"}, HTTPStatus.OK
