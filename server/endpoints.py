@@ -82,6 +82,41 @@ register_model = api.model(
     },
 )
 
+# Constants for manuscript states
+MANUSCRIPT_STATE_SUBMITTED = "Submitted"
+MANUSCRIPT_STATE_REFEREE_REVIEW = "Referee Review"
+MANUSCRIPT_STATE_AUTHOR_REVISIONS = "Author Revisions"
+MANUSCRIPT_STATE_EDITOR_REVIEW = "Editor Review"
+MANUSCRIPT_STATE_COPY_EDIT = "Copy Edit"
+MANUSCRIPT_STATE_FORMATTING = "Formatting"
+MANUSCRIPT_STATE_REJECTED = "Rejected"
+MANUSCRIPT_STATE_WITHDRAWN = "Withdrawn"
+MANUSCRIPT_STATE_DONE = "Done"
+MANUSCRIPT_STATE_PUBLISHED = "Published"
+
+MANUSCRIPT_STATES = [
+    MANUSCRIPT_STATE_SUBMITTED,
+    MANUSCRIPT_STATE_REFEREE_REVIEW,
+    MANUSCRIPT_STATE_AUTHOR_REVISIONS,
+    MANUSCRIPT_STATE_EDITOR_REVIEW,
+    MANUSCRIPT_STATE_COPY_EDIT,
+    MANUSCRIPT_STATE_FORMATTING,
+    MANUSCRIPT_STATE_REJECTED,
+    MANUSCRIPT_STATE_WITHDRAWN,
+    MANUSCRIPT_STATE_DONE,
+    MANUSCRIPT_STATE_PUBLISHED,
+]
+
+# File upload configuration
+UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
+ALLOWED_EXTENSIONS = {"pdf", "doc", "docx"}
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def allowed_file(filename):
+    return (
+        "." in filename
+        and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+    )
 
 @api.route(HELLO_EP)
 class HelloWorld(Resource):
@@ -212,10 +247,15 @@ class Texts(Resource):
     @api.response(HTTPStatus.BAD_REQUEST, "Text with this key already exists")
     def post(self):
         data = api.payload
+        key = data.get("key")
+        title = data.get("title")
+        text = data.get("text")
+
+        if not all([key, title, text]):
+            return {"message": "Missing required fields"}, HTTPStatus.BAD_REQUEST
+
         try:
-            new_text = txt.create_text(
-                data["key"], data["title"], data["text"]
-            )
+            new_text = txt.create_text(key, title, text)
             return (
                 {"message": "Text created successfully", "text": new_text},
                 HTTPStatus.CREATED,
@@ -242,8 +282,15 @@ class Texts(Resource):
     @api.response(HTTPStatus.NOT_FOUND, "Text not found")
     def put(self):
         data = api.payload
+        key = data.get("key")
+        title = data.get("title")
+        text = data.get("text")
+
+        if not all([key, title, text]):
+            return {"message": "Missing required fields"}, HTTPStatus.BAD_REQUEST
+
         try:
-            updated = txt.update_text(data["key"], data["title"], data["text"])
+            updated = txt.update_text(key, title, text)
             return (
                 {"message": "Text updated successfully", "text": updated},
                 HTTPStatus.OK,
@@ -314,18 +361,7 @@ class ManuscriptStates(Resource):
             }
 
         return {
-            "states": [
-                "Submitted",
-                "Referee Review",
-                "Author Revisions",
-                "Editor Review",
-                "Copy Edit",
-                "Formatting",
-                "Rejected",
-                "Withdrawn",
-                "Done",
-                "Published",
-            ],
+            "states": MANUSCRIPT_STATES,
             "manuscripts": state_info,
         }
 
@@ -431,18 +467,6 @@ class ManuscriptDelete(Resource):
         )
 
 
-UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
-ALLOWED_EXTENSIONS = {"pdf", "doc", "docx"}
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-
-def allowed_file(filename):
-    return (
-        "." in filename
-        and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-    )
-
-
 @api.route(f"{MANUSCRIPT_EP}/update")
 class ManuscriptUpdate(Resource):
     @api.response(HTTPStatus.OK, "Manuscript updated successfully")
@@ -450,32 +474,31 @@ class ManuscriptUpdate(Resource):
     @api.response(HTTPStatus.CONFLICT, "Error updating")
     def put(self):
         title = request.form.get("title")
-        author = request.form.get("author")
-        author_email = request.form.get("author_email")
-        text = request.form.get("text")
-        abstract = request.form.get("abstract")
-        editor_email = request.form.get("editor_email")
-        state = request.form.get("state")
-        file = request.files.get("file")
+        if not title:
+            return (
+                {"message": "Title is required", "return": None},
+                HTTPStatus.BAD_REQUEST,
+            )
 
         if not mt.exists(title):
             return (
                 {
-                    "message": f"Manuscript '{title}' " f"does not exist.",
+                    "message": f"Manuscript '{title}' does not exist.",
                     "return": None,
                 },
                 HTTPStatus.NOT_FOUND,
             )
 
         updates = {
-            mt.AUTHOR: author,
-            mt.AUTHOR_EMAIL: author_email,
-            mt.TEXT: text,
-            mt.ABSTRACT: abstract,
-            mt.EDITOR_EMAIL: editor_email,
-            mt.STATE: state,
+            mt.AUTHOR: request.form.get("author"),
+            mt.AUTHOR_EMAIL: request.form.get("author_email"),
+            mt.TEXT: request.form.get("text"),
+            mt.ABSTRACT: request.form.get("abstract"),
+            mt.EDITOR_EMAIL: request.form.get("editor_email"),
+            mt.STATE: request.form.get("state"),
         }
 
+        file = request.files.get("file")
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             filepath = os.path.join(UPLOAD_FOLDER, filename)
@@ -487,7 +510,7 @@ class ManuscriptUpdate(Resource):
             return (
                 {
                     "message": "Manuscript updated successfully",
-                    "return": updated[mt.TITLE],
+                    "return": updated.get(mt.TITLE),
                 },
                 HTTPStatus.OK,
             )
@@ -496,8 +519,7 @@ class ManuscriptUpdate(Resource):
         except Exception as e:
             return (
                 {
-                    "message": f"Error updating manuscript '{title}': "
-                    f"{str(e)}",
+                    "message": f"Error updating manuscript '{title}': {str(e)}",
                     "return": None,
                 },
                 HTTPStatus.CONFLICT,
@@ -513,8 +535,11 @@ class ReceiveAction(Resource):
             title = request.json.get(mt.TITLE)
             curr_state = request.json.get(mt.STATE)
             action = request.json.get(mt.ACTION)
-            kwargs = {}
 
+            if not all([title, curr_state, action]):
+                return {"message": "Missing required fields"}, HTTPStatus.BAD_REQUEST
+
+            kwargs = {}
             manuscript = mt.read_one(title)
             if not manuscript:
                 title_no_found = f'Manuscript with title "{title}" not found.'
@@ -572,12 +597,16 @@ class Register(Resource):
     @api.response(HTTPStatus.CONFLICT, "User already exists or invalid input")
     def post(self):
         data = request.json
+        email = data.get("email")
+        password = data.get("password")
+        
+        if not email or not password:
+            return {"message": "Email and password are required"}, HTTPStatus.BAD_REQUEST
+            
         try:
-            email = ppl.register_user(
-                email=data["email"], password=data["password"]
-            )
+            registered_email = ppl.register_user(email=email, password=password)
             return (
-                {"message": "User registered successfully", "email": email},
+                {"message": "User registered successfully", "email": registered_email},
                 HTTPStatus.CREATED,
             )
         except Exception as e:
@@ -593,6 +622,9 @@ class Login(Resource):
         data = request.json
         email = data.get("email")
         password = data.get("password")
+
+        if not email or not password:
+            return {"message": "Email and password are required"}, HTTPStatus.BAD_REQUEST
 
         if ppl.login_user(email, password):
             return {"message": "Login successful"}, HTTPStatus.OK
