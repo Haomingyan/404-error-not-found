@@ -215,7 +215,7 @@ def update_person(name: str, affiliation: str, email: str, roles: list):
 PASSWORD = 'password'
 
 
-def register_user(email: str, password: str):
+def register_user(email: str, password: str, role: str = "author"):
     existing_user = dbc.read_one(USER_COLLECT, {EMAIL: email})
     if existing_user:
         raise ValueError(f'User already exists: {email}')
@@ -229,6 +229,7 @@ def register_user(email: str, password: str):
     user = {
         EMAIL: email,
         PASSWORD: hashed_pw,
+        "role": role
     }
 
     dbc.create(USER_COLLECT, user)
@@ -244,3 +245,11 @@ def login_user(email: str, password: str) -> bool:
     if not stored_pw:
         return False
     return check_password_hash(stored_pw, password)
+
+
+def get_user_by_email(email: str) -> dict:
+    """
+    Fetch a user from the MongoDB 'users' collection by email.
+    Returns None if user does not exist.
+    """
+    return dbc.fetch_one(USER_COLLECT, {EMAIL: email})

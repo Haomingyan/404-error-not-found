@@ -79,6 +79,9 @@ register_model = api.model(
     {
         "email": fields.String(required=True, description="Your email"),
         "password": fields.String(required=True, description="Your password"),
+        "role": fields.String(
+            required=False,
+            description="User role (e.g., author, editor, etc.)"),
     },
 )
 
@@ -608,22 +611,28 @@ class Register(Resource):
         data = request.json
         email = data.get("email")
         password = data.get("password")
+        role = data.get("role", "author").lower()
+
         if not email or not password:
             return {
                 "message": "Email and password are required"
             }, HTTPStatus.BAD_REQUEST
+
         try:
             registered_email = ppl.register_user(
                 email=email,
-                password=password
+                password=password,
+                role=role
             )
             return (
                 {
                     "message": "User registered successfully",
-                    "email": registered_email},
+                    "email": registered_email
+                },
                 HTTPStatus.CREATED,
             )
         except Exception as e:
+            print("[register endpoint] error inserting user:", e)
             return {"message": str(e)}, HTTPStatus.CONFLICT
 
 
@@ -664,6 +673,25 @@ class Roles(Resource):
             return {"data": {"masthead_roles": get_masthead_roles()}}
 
         return {"data": {"roles": get_roles()}}
+
+
+@api.route("/users")
+class Users(Resource):
+    @api.response(HTTPStatus.OK, "User found")
+    @api.response(HTTPStatus.NOT_FOUND, "User not found")
+    def get(self):
+        email = request.args.get("email")
+        if not email:
+            return {"message": "Email is required"}, HTTPStatus.BAD_REQUEST
+
+        user = ppl.get_user_by_email(email)
+        if user:
+            return {
+                "email": user["email"],
+                "role": user.get("role", "unknown")
+            }, HTTPStatus.OK
+        else:
+            return {"message": "User not found"}, HTTPStatus.NOT_FOUND
 
 
 @api.route("/dev/system-info")
