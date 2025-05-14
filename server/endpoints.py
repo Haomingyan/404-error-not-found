@@ -695,6 +695,26 @@ class Users(Resource):
             return {"message": "User not found"}, HTTPStatus.NOT_FOUND
 
 
+@api.route("/editors")
+class Editors(Resource):
+    @api.response(HTTPStatus.OK, "List of editors retrieved successfully")
+    def get(self):
+        try:
+            all_users = ppl.read_users()
+            editor_roles = {"editor", "consulting editor", "managing editor"}
+            editor_emails = []
+
+            for user in all_users.values():
+                role = user.get("role", "").lower()
+                if role in editor_roles:
+                    editor_emails.append(user["email"])
+
+            return {"editors": editor_emails}, HTTPStatus.OK
+
+        except Exception as e:
+            return {"message": str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
+
+
 @api.route("/dev/system-info")
 class SystemInfo(Resource):
     @api.response(HTTPStatus.OK, "Success")
