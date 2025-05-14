@@ -79,10 +79,17 @@ def update(title: str, updates: dict) -> dict:
         raise ValueError(f"Manuscript with title '{title}' does not exist.")
     if TITLE in updates:
         del updates[TITLE]
-    if AUTHOR_EMAIL in updates and not ppl.is_valid_email(updates[AUTHOR_EMAIL]):
-        raise ValueError(f'Invalid author email: {updates[AUTHOR_EMAIL]}')
-    if EDITOR_EMAIL in updates and not ppl.is_valid_email(updates[EDITOR_EMAIL]):
-        raise ValueError(f'Invalid editor email: {updates[EDITOR_EMAIL]}')
+    if AUTHOR_EMAIL in updates:
+        if updates[AUTHOR_EMAIL] and not ppl.is_valid_email(updates[AUTHOR_EMAIL]):
+            raise ValueError(f'Invalid author email: {updates[AUTHOR_EMAIL]}')
+        elif not updates[AUTHOR_EMAIL]:
+            del updates[AUTHOR_EMAIL]
+
+    if EDITOR_EMAIL in updates:
+        if updates[EDITOR_EMAIL] and not ppl.is_valid_email(updates[EDITOR_EMAIL]):
+            raise ValueError(f'Invalid editor email: {updates[EDITOR_EMAIL]}')
+        elif not updates[EDITOR_EMAIL]:
+            del updates[EDITOR_EMAIL]
 
     dbc.update_doc(MANUSCRIPTS_COLLECT, {TITLE: title}, updates)
     return read_one(title)
