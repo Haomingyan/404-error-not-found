@@ -257,4 +257,3 @@ def get_user_by_email(email: str) -> dict:
 
 def read_users() -> dict:
     return dbc.read_dict(USER_COLLECT, EMAIL)
-
