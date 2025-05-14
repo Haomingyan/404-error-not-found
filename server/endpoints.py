@@ -424,7 +424,7 @@ class ManuscriptCreate(Resource):
             author_email = data.get("author_email")
             text = data.get("text")
             abstract = data.get("abstract")
-            #editor_email = data.get("editor_email")
+            # editor_email = data.get("editor_email")
             editor_email = "editorexample@nyu.edu"
 
             ret = mt.create(
